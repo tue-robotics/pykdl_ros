@@ -10,10 +10,10 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS pykdl_ros tf2_ros
+  CATKIN_DEPENDS geometry_msgs pykdl_ros tf2_ros
   DEPENDS
 )
 
-#if (CATKIN_ENABLE_TESTING)
-  #catkin_add_nosetests(test)
-#endif()
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test)
+endif()
