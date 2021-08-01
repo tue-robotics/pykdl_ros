@@ -5,7 +5,7 @@ from std_msgs.msg import Header
 
 class VectorStamped:
     def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str):
-        assert isinstance(vector, kdl.vector)
+        assert isinstance(vector, kdl.Vector)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
         self.vector = vector
