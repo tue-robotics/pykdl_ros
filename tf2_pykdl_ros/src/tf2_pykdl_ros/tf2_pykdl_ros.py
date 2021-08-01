@@ -73,6 +73,26 @@ def convert_vector(vector):
 tf2_ros.ConvertRegistration().add_convert((VectorStamped, VectorStamped), convert_vector)
 
 
+def do_transform_vector(vector: VectorStamped, transform: gm.TransformStamped):
+    """
+    Apply a transform in the form of a geometry_msgs message to a VectorStamped.
+
+    :param vector: The VectorStamped to transform.
+    :type vector: pykdl_ros.VectorStamped
+    :param transform: The transform to apply.
+    :type transform: geometry_msgs.msg.TransformStamped
+    :return: The transformed vector.
+    :rtype: pykdl_ros.VectorStamped
+    """
+    assert transform.child_frame_id == vector.header.frame_id
+    res_vector = transform_to_kdl(transform) * vector
+    res = VectorStamped(res_vector, transform.header.stamp, transform.header.frame_id)
+    return res
+
+
+tf2_ros.TransformRegistration().add(VectorStamped, do_transform_vector)
+
+
 def do_transform_frame(frame: FrameStamped, transform: gm.TransformStamped):
     """
     Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
