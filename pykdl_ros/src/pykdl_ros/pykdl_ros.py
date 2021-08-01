@@ -29,6 +29,10 @@ class VectorStamped:
         vector = kdl.Vector(x, y, z)
         return VectorStamped(vector, stamp, frame_id)
 
+    @staticmethod
+    def from_FrameStamped(frame):
+        return VectorStamped(frame.frame.p, frame.header.stamp, frame.header.frame_id)
+
 
 class FrameStamped:
     def __init__(self, frame, stamp, frame_id):
