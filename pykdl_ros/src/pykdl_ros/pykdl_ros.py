@@ -35,7 +35,7 @@ class VectorStamped:
 
 
 class FrameStamped:
-    def __init__(self, frame, stamp, frame_id):
+    def __init__(self, frame: kdl.Frame, stamp: Time, frame_id: str):
         assert isinstance(frame, kdl.Frame)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
