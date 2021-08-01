@@ -85,7 +85,7 @@ def do_transform_vector(vector: VectorStamped, transform: gm.TransformStamped):
     :rtype: pykdl_ros.VectorStamped
     """
     assert transform.child_frame_id == vector.header.frame_id
-    res_vector = transform_to_kdl(transform) * vector
+    res_vector = transform_to_kdl(transform) * vector.vector
     res = VectorStamped(res_vector, transform.header.stamp, transform.header.frame_id)
     return res
 
