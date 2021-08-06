@@ -4,7 +4,21 @@ from std_msgs.msg import Header
 
 
 class VectorStamped:
+    """
+    Stamped version of PyKDL.Vector
+    """
+
     def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str):
+        """
+        Constructor
+
+        :param vector: vector
+        :type vector: PykDL.Vector
+        :param stamp: TimeStamp
+        :type stamp: rospy.Time
+        :param frame_id: Frame ID
+        :type frame_id: str
+        """
         assert isinstance(vector, kdl.Vector)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
@@ -26,16 +40,54 @@ class VectorStamped:
 
     @staticmethod
     def from_xyz(x: float, y: float, z: float, stamp: Time, frame_id: str):
+        """
+        Custom constructor
+
+        :param x: x
+        :type x: float
+        :param y: y
+        :type y: float
+        :param z: z
+        :type z: float
+        :param stamp: TimeStamp
+        :type stamp: rospy.Time
+        :param frame_id: Frame ID
+        :type frame_id: str
+        :return: Filled object
+        :rtype: VectorStamped
+        """
         vector = kdl.Vector(x, y, z)
         return VectorStamped(vector, stamp, frame_id)
 
     @staticmethod
     def from_FrameStamped(frame):
+        """
+        Custom constructor, extract vector from the frame
+
+        :param frame: frame
+        :type frame: FrameStamped
+        :return: Filled object
+        :rtype: VectorStamped
+        """
         return VectorStamped(frame.frame.p, frame.header.stamp, frame.header.frame_id)
 
 
 class FrameStamped:
+    """
+    Stamped version of PyKDL.Frame
+    """
+
     def __init__(self, frame: kdl.Frame, stamp: Time, frame_id: str):
+        """
+        Constructor
+
+        :param frame: frame
+        :type frame: PykDL.Frame
+        :param stamp: TimeStamp
+        :type stamp: rospy.Time
+        :param frame_id: Frame ID
+        :type frame_id: str
+        """
         assert isinstance(frame, kdl.Frame)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
@@ -59,6 +111,28 @@ class FrameStamped:
 
     @staticmethod
     def from_xyz_RPY(x: float, y: float, z: float, R: float, P: float, Y: float, stamp: Time, frame_id: str):
+        """
+        Custom constructor
+
+        :param x: x
+        :type x: float
+        :param y: y
+        :type y: float
+        :param z: z
+        :type z: float
+        :param R: Roll
+        :type R: float
+        :param P: Pitch
+        :type P: float
+        :param Y: Yaw
+        :type Y: float
+        :param stamp: TimeStamp
+        :type stamp: rospy.Time
+        :param frame_id: Frame ID
+        :type frame_id: str
+        :return: Filled object
+        :rtype: VectorStamped
+        """
         vector = kdl.Vector(x, y, z)
         rotation = kdl.Rotation(R, P, Y)
         frame = kdl.Frame(rotation, vector)
