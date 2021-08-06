@@ -16,4 +16,8 @@ catkin_package(
 
 if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test)
+
+  find_package(catkin REQUIRED COMPONENTS rostest)
+
+  add_rostest(${CMAKE_CURRENT_SOURCE_DIR}/test/test_tf2_ros_convert.test)
 endif()

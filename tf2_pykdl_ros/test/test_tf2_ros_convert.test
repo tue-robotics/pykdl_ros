@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <test test-name="test_tf2_ros_convert" pkg="tf2_pykdl_ros" type="test_tf2_ros_convert.py" time-limit="120" />
+</launch>

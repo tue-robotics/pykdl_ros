@@ -51,7 +51,7 @@ def from_msg_vector(msg):
     :return: The timestamped converted PyKDL vector.
     :rtype: pykdl_ros.VectorStamped
     """
-    vector = VectorStamped(msg.point.x, msg.point.y, msg.point.z, msg.header.stamp, msg.header.frame_id)
+    vector = VectorStamped.from_xyz(msg.point.x, msg.point.y, msg.point.z, msg.header.stamp, msg.header.frame_id)
     return vector
 
 
