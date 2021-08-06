@@ -21,6 +21,7 @@
   <exec_depend>tf2_ros</exec_depend>
 
   <test_depend>rostest</test_depend>
+  <test_depend>tf2_geometry_msgs</test_depend>
 
   <doc_depend>python3-sphinx</doc_depend>
   <doc_depend>python-sphinx-autoapi-pip</doc_depend>
