@@ -9,9 +9,6 @@ import tf2_ros
 import tf2_geometry_msgs
 
 # noinspection PyUnresolvedReferences
-import tf2_kdl
-
-# noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
 from geometry_msgs.msg import PointStamped
