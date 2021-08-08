@@ -1,5 +1,6 @@
 import unittest
 
+import PyKDL as kdl
 from pykdl_ros import VectorStamped, FrameStamped
 import rospy
 
@@ -11,7 +12,7 @@ import tf2_geometry_msgs
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PointStamped, TransformStamped
 
 
 class TestRegistration(unittest.TestCase):
@@ -61,6 +62,36 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(p.point.z, v.vector.z())
         self.assertEqual(p.header.stamp, v.header.stamp)
         self.assertEqual(p.header.frame_id, v.header.frame_id)
+
+
+class TestTransform(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.registration = tf2_ros.TransformRegistration()
+        cls.t = TransformStamped()
+        cls.t.transform.translation.x = -1
+        cls.t.transform.rotation.x = -1
+        cls.t.header.stamp = rospy.Time(2)
+        cls.t.header.frame_id = "a"
+        cls.t.child_frame_id = "b"
+
+    def test_transform(self):
+        f = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(2), "b")
+        transform_func = self.registration.get(type(f))
+        f_b = transform_func(f, self.t)
+        self.assertEqual(f_b.frame.p.x(), 0)
+        self.assertEqual(f_b.frame.p.y(), -2)
+        self.assertEqual(f_b.frame.p.z(), -3)
+        self.assertEqual(
+            f_b.frame.M.GetQuaternion(),
+            (0.43595284407356577, -0.44443511344300074, 0.310622451065704, 0.7182870182434113),
+        )
+
+    def test_transform_incorrect_frame(self):
+        f2 = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(2), "a")
+        transform_func = self.registration.get(type(f2))
+        with self.assertRaises(AssertionError):
+            transform_func(f2, self.t)
 
 
 if __name__ == "__main__":
