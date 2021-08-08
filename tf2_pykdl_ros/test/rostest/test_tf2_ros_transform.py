@@ -23,8 +23,6 @@ class TestTransform(unittest.TestCase):
         t = TransformStamped()
         t.transform.translation.x = 1
         t.transform.rotation.x = 1
-        t.transform.rotation.x = 1
-        t.transform.rotation.x = 1
         t.header.stamp = rospy.Time(2)
         t.header.frame_id = "a"
         t.child_frame_id = "b"

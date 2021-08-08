@@ -19,5 +19,5 @@ if (CATKIN_ENABLE_TESTING)
 
   find_package(catkin REQUIRED COMPONENTS rostest tf2_geometry_msgs)
 
-  add_rostest(${CMAKE_CURRENT_SOURCE_DIR}/test/test_tf2_ros_convert.test)
+  add_rostest(${CMAKE_CURRENT_SOURCE_DIR}/test/rostest/test_tf2_ros_transform.test)
 endif()
