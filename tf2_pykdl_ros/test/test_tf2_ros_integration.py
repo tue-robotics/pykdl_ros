@@ -12,7 +12,7 @@ import tf2_geometry_msgs
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
-from geometry_msgs.msg import PointStamped, TransformStamped
+from geometry_msgs.msg import PointStamped, PoseStamped, TransformStamped
 
 
 class TestRegistration(unittest.TestCase):
@@ -28,10 +28,23 @@ class TestRegistration(unittest.TestCase):
         self.convert_reg.get_to_msg(VectorStamped)
 
     def test_vector_stamped_convert(self):
+        self.convert_reg.get_convert((PointStamped, VectorStamped))
+        self.convert_reg.get_convert((PoseStamped, VectorStamped))
+        self.convert_reg.get_convert((VectorStamped, PointStamped))
         self.convert_reg.get_convert((VectorStamped, VectorStamped))
 
     def test_vector_stamped_transform(self):
         self.transform_reg.get(VectorStamped)
+
+    def test_frame_stamped_from_msg(self):
+        self.convert_reg.get_from_msg(FrameStamped)
+
+    def test_frame_stamped_to_msg(self):
+        self.convert_reg.get_to_msg(FrameStamped)
+
+    def test_frame_stamped_convert(self):
+        self.convert_reg.get_convert((PoseStamped, FrameStamped))
+        self.convert_reg.get_convert((FrameStamped, PoseStamped))
 
     def test_frame_stamped_transform(self):
         self.transform_reg.get(FrameStamped)
