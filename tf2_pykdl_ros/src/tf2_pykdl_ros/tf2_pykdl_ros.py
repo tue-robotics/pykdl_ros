@@ -68,16 +68,16 @@ tf2_ros.ConvertRegistration().add_convert((PoseStamped, VectorStamped), from_msg
 tf2_ros.ConvertRegistration().add_from_msg(VectorStamped, from_msg_vector)
 
 
-def convert_vector(vector):
+def convert_vector(vector: VectorStamped):
     """
-    Convert a generic stamped triplet message to a stamped PyKDL Vector.
+    Convert a stamped PyKDL Vector to a stamped PyKDL Vector.
 
-    :param vector: The message to convert.
+    :param vector: The vector to convert.
     :type vector: pykdl_ros.VectorStamped
     :return: The timestamped converted PyKDL vector.
     :rtype: pykdl_ros.VectorStamped
     """
-    return VectorStamped(vector.vector, vector.header.stamp, vector.header.frame_id)
+    return VectorStamped(kdl.Vector(vector.vector), vector.header.stamp, vector.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((VectorStamped, VectorStamped), convert_vector)
