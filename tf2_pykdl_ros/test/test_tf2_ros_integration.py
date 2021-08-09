@@ -45,6 +45,7 @@ class TestRegistration(unittest.TestCase):
     def test_frame_stamped_convert(self):
         self.convert_reg.get_convert((PoseStamped, FrameStamped))
         self.convert_reg.get_convert((FrameStamped, PoseStamped))
+        self.convert_reg.get_convert((FrameStamped, FrameStamped))
 
     def test_frame_stamped_transform(self):
         self.transform_reg.get(FrameStamped)
