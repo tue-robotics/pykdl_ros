@@ -5,7 +5,7 @@ from pykdl_ros import VectorStamped, FrameStamped
 import tf2_ros
 
 
-def transform_to_kdl(t: TransformStamped):
+def transform_to_kdl(t: TransformStamped) -> kdl.Frame:
     """
     Convert a geometry_msgs Transform message to a PyKDL Frame.
 
@@ -59,8 +59,7 @@ def from_msg_vector(msg: Union[PointStamped, PoseStamped]) -> VectorStamped:
         v = msg.pose.position
     else:
         raise TypeError(f"msg should be PointStamped or PoseStamped, not '{type(msg)}'")
-    vector = VectorStamped.from_xyz(v.x, v.y, v.z, msg.header.stamp, msg.header.frame_id)
-    return vector
+    return VectorStamped.from_xyz(v.x, v.y, v.z, msg.header.stamp, msg.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((PointStamped, VectorStamped), from_msg_vector)
@@ -96,8 +95,7 @@ def do_transform_vector(vector: VectorStamped, transform: TransformStamped) -> V
     """
     assert transform.child_frame_id == vector.header.frame_id
     res_vector = transform_to_kdl(transform) * vector.vector
-    res = VectorStamped(res_vector, transform.header.stamp, transform.header.frame_id)
-    return res
+    return VectorStamped(res_vector, transform.header.stamp, transform.header.frame_id)
 
 
 tf2_ros.TransformRegistration().add(VectorStamped, do_transform_vector)
@@ -146,15 +144,14 @@ def from_msg_frame(msg: PoseStamped) -> FrameStamped:
     q = msg.pose.orientation
     rotation = kdl.Rotation.Quaternion(q.x, q.y, q.z, q.w)
     frame = kdl.Frame(rotation, vector)
-    frame_stamped = FrameStamped(frame, msg.header.stamp, msg.header.frame_id)
-    return frame_stamped
+    return FrameStamped(frame, msg.header.stamp, msg.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((PoseStamped, FrameStamped), from_msg_frame)
 tf2_ros.ConvertRegistration().add_from_msg(FrameStamped, from_msg_frame)
 
 
-def convert_frame(frame: FrameStamped):
+def convert_frame(frame: FrameStamped) -> FrameStamped:
     """
     Convert a stamped PyKDL Frame to a stamped PyKDL Frame.
 
@@ -182,8 +179,7 @@ def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> Tran
     """
     assert transform.child_frame_id == frame.header.frame_id
     res_frame = transform_to_kdl(transform) * frame.frame
-    res = FrameStamped(res_frame, transform.header.stamp, transform.header.frame_id)
-    return res
+    return FrameStamped(res_frame, transform.header.stamp, transform.header.frame_id)
 
 
 tf2_ros.TransformRegistration().add(FrameStamped, do_transform_frame)
