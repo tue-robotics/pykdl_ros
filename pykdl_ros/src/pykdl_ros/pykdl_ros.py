@@ -60,7 +60,7 @@ class VectorStamped:
         return VectorStamped(vector, stamp, frame_id)
 
     @staticmethod
-    def from_FrameStamped(frame):
+    def from_FrameStamped(frame: FrameStamped):
         """
         Custom constructor, extract vector from the frame
 
