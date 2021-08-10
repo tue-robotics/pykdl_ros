@@ -26,10 +26,10 @@ class FrameStamped:
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self):
-        xyz = "(x={x}, y={y}, z={z})".format(x=self.frame.p.x(), y=self.frame.p.y(), z=self.frame.p.z())
+        xyz = f"(x={self.frame.p.x()}, y={self.frame.p.y()}, z={self.frame.p.z()})"
         r, p, y = self.frame.M.GetRPY()
-        rpy = "(r={x}, p={y}, y={z})".format(x=r, y=p, z=y)
-        return "FrameStamped(pos:{pos}, rot:{rot} @ {fid})".format(pos=xyz, rot=rpy, fid=self.header.frame_id)
+        rpy = f"(r={r}, p={p}, y={y})"
+        return f"FrameStamped(pos:{xyz}, rot:{rpy} @ {self.header.frame_id})"
 
     def __eq__(self, other):
         if isinstance(other, FrameStamped):
@@ -93,8 +93,8 @@ class VectorStamped:
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self):
-        xyz = "(x={x}, y={y}, z={z})".format(x=self.vector.x(), y=self.vector.y(), z=self.vector.z())
-        return "VectorStamped({xyz} @ {fid})".format(xyz=self.vector, fid=self.header.frame_id)
+        xyz = f"(x={self.vector.x()}, y={self.vector.y()}, z={self.vector.z()})"
+        return f"VectorStamped({xyz} @ {self.header.frame_id})"
 
     def __eq__(self, other):
         if isinstance(other, VectorStamped):
