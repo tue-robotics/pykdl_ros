@@ -5,7 +5,7 @@ from pykdl_ros import VectorStamped, FrameStamped
 import tf2_ros
 
 
-def transform_to_kdl(t):
+def transform_to_kdl(t: TransformStamped):
     """
     Convert a geometry_msgs Transform message to a PyKDL Frame.
 
