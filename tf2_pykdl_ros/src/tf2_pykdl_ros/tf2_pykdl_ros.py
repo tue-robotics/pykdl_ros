@@ -46,7 +46,7 @@ tf2_ros.ConvertRegistration().add_to_msg(VectorStamped, to_msg_vector)
 
 def from_msg_vector(msg: Union[PointStamped, PoseStamped]) -> VectorStamped:
     """
-    Convert a PointStamped message to a stamped VectorStamped.
+    Convert a PointStamped/PoseStamped message to a stamped VectorStamped.
 
     :param msg: The PointStamped/PoseStamped message to convert.
     :type msg: Union[geometry_msgs.msg.PointStamped, geometry.msg.PoseStamped]
