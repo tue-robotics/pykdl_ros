@@ -13,6 +13,9 @@
 
   <license>BSD</license>
 
+  <url type="bugtracker">https://github.com/tue-robotics/pykdl_ros/issues</url>
+  <url type="repository">https://github.com/tue-robotics/pykdl_ros</url>
+
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>python_orocos_kdl</exec_depend>
