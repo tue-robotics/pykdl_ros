@@ -40,8 +40,10 @@ class FrameStamped:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    @staticmethod
-    def from_xyz_RPY(x: float, y: float, z: float, R: float, P: float, Y: float, stamp: Time, frame_id: str):
+    @classmethod
+    def from_xyz_rpy(
+        cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
+    ):
         """
         Custom constructor
 
@@ -51,12 +53,12 @@ class FrameStamped:
         :type y: float
         :param z: z
         :type z: float
-        :param R: Roll
-        :type R: float
-        :param P: Pitch
-        :type P: float
-        :param Y: Yaw
-        :type Y: float
+        :param roll: Roll
+        :type roll: float
+        :param pitch: Pitch
+        :type pitch: float
+        :param yaw: Yaw
+        :type yaw: float
         :param stamp: TimeStamp
         :type stamp: rospy.Time
         :param frame_id: Frame ID
@@ -65,9 +67,9 @@ class FrameStamped:
         :rtype: FrameStamped
         """
         vector = kdl.Vector(x, y, z)
-        rotation = kdl.Rotation(R, P, Y)
+        rotation = kdl.Rotation(roll, pitch, yaw)
         frame = kdl.Frame(rotation, vector)
-        return FrameStamped(frame, stamp, frame_id)
+        return cls(frame, stamp, frame_id)
 
 
 class VectorStamped:
@@ -105,8 +107,8 @@ class VectorStamped:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    @staticmethod
-    def from_xyz(x: float, y: float, z: float, stamp: Time, frame_id: str):
+    @classmethod
+    def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str):
         """
         Custom constructor
 
@@ -124,10 +126,10 @@ class VectorStamped:
         :rtype: VectorStamped
         """
         vector = kdl.Vector(x, y, z)
-        return VectorStamped(vector, stamp, frame_id)
+        return cls(vector, stamp, frame_id)
 
-    @staticmethod
-    def from_FrameStamped(frame: FrameStamped):
+    @classmethod
+    def from_framestamped(cls, frame: FrameStamped):
         """
         Custom constructor, extract vector from the frame
 
@@ -136,4 +138,4 @@ class VectorStamped:
         :return: Filled object
         :rtype: VectorStamped
         """
-        return VectorStamped(frame.frame.p, frame.header.stamp, frame.header.frame_id)
+        return cls(frame.frame.p, frame.header.stamp, frame.header.frame_id)
