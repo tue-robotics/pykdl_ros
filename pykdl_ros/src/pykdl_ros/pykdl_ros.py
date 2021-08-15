@@ -8,6 +8,8 @@ class FrameStamped:
     Stamped version of PyKDL.Frame
     """
 
+    __slots__ = "frame", "header"
+
     def __init__(self, frame: kdl.Frame, stamp: Time, frame_id: str):
         """
         Constructor
@@ -76,6 +78,8 @@ class VectorStamped:
     """
     Stamped version of PyKDL.Vector
     """
+
+    __slots__ = "vector", "header"
 
     def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str):
         """
