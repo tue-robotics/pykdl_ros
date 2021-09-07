@@ -10,9 +10,7 @@ def transform_to_kdl(t: TransformStamped) -> kdl.Frame:
     Convert a geometry_msgs Transform message to a PyKDL Frame.
 
     :param t: The Transform message to convert.
-    :type t: geometry_msgs.msg.TransformStamped
     :return: The converted PyKDL frame.
-    :rtype: PyKDL.Frame
     """
 
     return kdl.Frame(
@@ -28,9 +26,7 @@ def to_msg_vector(vector: VectorStamped) -> PointStamped:
     Convert a VectorStamped to a geometry_msgs PointStamped message.
 
     :param vector: The vector to convert.
-    :type vector: pykdl_ros.VectorStamped
     :return: The converted vector/point.
-    :rtype: geometry_msgs.msg.PointStamped
     """
     msg = PointStamped()
     msg.header = vector.header
@@ -49,9 +45,7 @@ def from_msg_vector(msg: Union[PointStamped, PoseStamped]) -> VectorStamped:
     Convert a PointStamped/PoseStamped message to a stamped VectorStamped.
 
     :param msg: The PointStamped/PoseStamped message to convert.
-    :type msg: Union[geometry_msgs.msg.PointStamped, geometry.msg.PoseStamped]
     :return: The timestamped converted PyKDL vector.
-    :rtype: pykdl_ros.VectorStamped
     """
     if isinstance(msg, PointStamped):
         v = msg.point
@@ -72,9 +66,7 @@ def convert_vector(vector: VectorStamped):
     Convert a stamped PyKDL Vector to a stamped PyKDL Vector.
 
     :param vector: The vector to convert.
-    :type vector: pykdl_ros.VectorStamped
     :return: The timestamped converted PyKDL vector.
-    :rtype: pykdl_ros.VectorStamped
     """
     return VectorStamped(kdl.Vector(vector.vector), vector.header.stamp, vector.header.frame_id)
 
@@ -87,11 +79,8 @@ def do_transform_vector(vector: VectorStamped, transform: TransformStamped) -> V
     Apply a transform in the form of a geometry_msgs message to a VectorStamped.
 
     :param vector: The VectorStamped to transform.
-    :type vector: pykdl_ros.VectorStamped
     :param transform: The transform to apply.
-    :type transform: geometry_msgs.msg.TransformStamped
     :return: The transformed vector.
-    :rtype: pykdl_ros.VectorStamped
     """
     assert transform.child_frame_id == vector.header.frame_id
     res_vector = transform_to_kdl(transform) * vector.vector
@@ -106,9 +95,7 @@ def to_msg_frame(frame: FrameStamped) -> PoseStamped:
     Convert a FrameStamped to a geometry_msgs PoseStamped message.
 
     :param frame: The frame to convert.
-    :type frame: pykdl_ros.FrameStamped
     :return: The converted Pose.
-    :rtype: geometry_msgs.msg.PointStamped
     """
     msg = PoseStamped()
     msg.header = frame.header
@@ -133,9 +120,7 @@ def from_msg_frame(msg: PoseStamped) -> FrameStamped:
     Convert a PoseStamped message to a stamped FrameStamped.
 
     :param msg: The PoseStamped message to convert.
-    :type msg: geometry.msg.PoseStamped
     :return: The timestamped converted PyKDL vector.
-    :rtype: pykdl_ros.FrameStamped
     """
     if not isinstance(msg, PoseStamped):
         raise TypeError(f"msg should be PoseStamped, not '{type(msg)}'")
@@ -156,9 +141,7 @@ def convert_frame(frame: FrameStamped) -> FrameStamped:
     Convert a stamped PyKDL Frame to a stamped PyKDL Frame.
 
     :param frame: The frame to convert.
-    :type frame: pykdl_ros.FrameStamped
     :return: The timestamped converted PyKDL frame.
-    :rtype: pykdl_ros.FrameStamped
     """
     return FrameStamped(kdl.Frame(frame.frame), frame.header.stamp, frame.header.frame_id)
 
@@ -171,11 +154,8 @@ def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> Tran
     Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
 
     :param frame: The PyKDL frame to transform.
-    :type frame: pykdl_ros.FrameStamped
     :param transform: The transform to apply.
-    :type transform: geometry_msgs.msg.TransformStamped
     :return: The transformed PyKDL frame.
-    :rtype: PyKDL.Frame
     """
     assert transform.child_frame_id == frame.header.frame_id
     res_frame = transform_to_kdl(transform) * frame.frame

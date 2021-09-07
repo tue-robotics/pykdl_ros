@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from rospy import Time
 import PyKDL as kdl
 from std_msgs.msg import Header
@@ -15,11 +17,8 @@ class FrameStamped:
         Constructor
 
         :param frame: frame
-        :type frame: PykDL.Frame
         :param stamp: TimeStamp
-        :type stamp: rospy.Time
         :param frame_id: Frame ID
-        :type frame_id: str
         """
         assert isinstance(frame, kdl.Frame)
         assert isinstance(stamp, Time)
@@ -45,28 +44,19 @@ class FrameStamped:
     @classmethod
     def from_xyz_rpy(
         cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
-    ):
+    ) -> FrameStamped:
         """
         Custom constructor
 
         :param x: x
-        :type x: float
         :param y: y
-        :type y: float
         :param z: z
-        :type z: float
         :param roll: Roll
-        :type roll: float
         :param pitch: Pitch
-        :type pitch: float
         :param yaw: Yaw
-        :type yaw: float
         :param stamp: TimeStamp
-        :type stamp: rospy.Time
         :param frame_id: Frame ID
-        :type frame_id: str
         :return: Filled object
-        :rtype: FrameStamped
         """
         vector = kdl.Vector(x, y, z)
         rotation = kdl.Rotation(roll, pitch, yaw)
@@ -86,11 +76,8 @@ class VectorStamped:
         Constructor
 
         :param vector: vector
-        :type vector: PykDL.Vector
         :param stamp: TimeStamp
-        :type stamp: rospy.Time
         :param frame_id: Frame ID
-        :type frame_id: str
         """
         assert isinstance(vector, kdl.Vector)
         assert isinstance(stamp, Time)
@@ -112,34 +99,26 @@ class VectorStamped:
         return not self.__eq__(other)
 
     @classmethod
-    def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str):
+    def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
         """
         Custom constructor
 
         :param x: x
-        :type x: float
         :param y: y
-        :type y: float
         :param z: z
-        :type z: float
         :param stamp: TimeStamp
-        :type stamp: rospy.Time
         :param frame_id: Frame ID
-        :type frame_id: str
         :return: Filled object
-        :rtype: VectorStamped
         """
         vector = kdl.Vector(x, y, z)
         return cls(vector, stamp, frame_id)
 
     @classmethod
-    def from_framestamped(cls, frame: FrameStamped):
+    def from_framestamped(cls, frame: FrameStamped) -> VectorStamped:
         """
         Custom constructor, extract vector from the frame
 
         :param frame: frame
-        :type frame: FrameStamped
         :return: Filled object
-        :rtype: VectorStamped
         """
         return cls(frame.frame.p, frame.header.stamp, frame.header.frame_id)
