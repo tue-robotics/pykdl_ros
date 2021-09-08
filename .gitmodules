@@ -1,0 +1,6 @@
+[submodule "pykdl_ros/docs"]
+	path = pykdl_ros/docs
+	url = https://github.com/tue-robotics/tue_documentation_python.git
+[submodule "tf2_pykdl_ros/docs"]
+	path = tf2_pykdl_ros/docs
+	url = https://github.com/tue-robotics/tue_documentation_python.git

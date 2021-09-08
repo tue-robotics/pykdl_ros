@@ -13,9 +13,25 @@
 
   <license>BSD</license>
 
+  <url type="bugtracker">https://github.com/tue-robotics/pykdl_ros/issues</url>
+  <url type="repository">https://github.com/tue-robotics/pykdl_ros</url>
+
   <buildtool_depend>catkin</buildtool_depend>
 
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>pykdl_ros</exec_depend>
+  <exec_depend>python_orocos_kdl</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>tf2_geometry_msgs</test_depend>
+
+  <doc_depend>python3-sphinx</doc_depend>
+  <doc_depend>python-sphinx-autoapi-pip</doc_depend>
+  <doc_depend>python-sphinx-rtd-theme-pip</doc_depend>
+
+  <export>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
 
 </package>
