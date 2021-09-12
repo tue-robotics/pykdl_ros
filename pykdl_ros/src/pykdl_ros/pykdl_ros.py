@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from rospy import Time
+from genpy import Time
 import PyKDL as kdl
 from std_msgs.msg import Header
 

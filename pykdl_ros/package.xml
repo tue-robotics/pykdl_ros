@@ -18,8 +18,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <exec_depend>genpy</exec_depend>
   <exec_depend>python_orocos_kdl</exec_depend>
-  <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
   <doc_depend>python3-sphinx</doc_depend>
