@@ -59,7 +59,7 @@ class FrameStamped:
         :return: Filled object
         """
         vector = kdl.Vector(x, y, z)
-        rotation = kdl.Rotation(roll, pitch, yaw)
+        rotation = kdl.Rotation.RPY(roll, pitch, yaw)
         frame = kdl.Frame(rotation, vector)
         return cls(frame, stamp, frame_id)
 
