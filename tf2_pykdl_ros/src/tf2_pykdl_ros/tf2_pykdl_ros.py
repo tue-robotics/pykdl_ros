@@ -104,10 +104,10 @@ def to_msg_frame(frame: FrameStamped) -> PoseStamped:
     msg.pose.position.y = v[1]
     msg.pose.position.z = v[2]
     q = frame.frame.M.GetQuaternion()
-    msg.pose.orientation.x = q.x
-    msg.pose.orientation.y = q.y
-    msg.pose.orientation.z = q.z
-    msg.pose.orientation.w = q.w
+    msg.pose.orientation.x = q[0]
+    msg.pose.orientation.y = q[1]
+    msg.pose.orientation.z = q[2]
+    msg.pose.orientation.w = q[3]
     return msg
 
 
