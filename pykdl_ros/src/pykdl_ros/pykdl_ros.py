@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from rospy import Time
+from genpy import Time
 import PyKDL as kdl
 from std_msgs.msg import Header
 
@@ -59,7 +59,7 @@ class FrameStamped:
         :return: Filled object
         """
         vector = kdl.Vector(x, y, z)
-        rotation = kdl.Rotation(roll, pitch, yaw)
+        rotation = kdl.Rotation.RPY(roll, pitch, yaw)
         frame = kdl.Frame(rotation, vector)
         return cls(frame, stamp, frame_id)
 

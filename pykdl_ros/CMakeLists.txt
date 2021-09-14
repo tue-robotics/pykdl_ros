@@ -10,7 +10,7 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS std_msgs rospy
+  CATKIN_DEPENDS genpy std_msgs
   DEPENDS
 )
 
