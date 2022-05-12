@@ -42,7 +42,7 @@ class FrameStamped:
         return not self.__eq__(other)
 
     def __hash__(self):
-        return hash((self.frame, self.header.stamp, self.header.frame_id))
+        return hash((self.frame, self.header.frame_id))
 
     @classmethod
     def from_xyz_rpy(
@@ -102,7 +102,7 @@ class VectorStamped:
         return not self.__eq__(other)
 
     def __hash__(self):
-        return hash((self.vector, self.header.stamp, self.header.frame_id))
+        return hash((self.vector, self.header.frame_id))
 
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
