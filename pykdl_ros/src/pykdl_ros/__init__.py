@@ -41,6 +41,9 @@ class FrameStamped:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return hash((self.frame, self.header.frame_id))
+
     @classmethod
     def from_xyz_rpy(
         cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
@@ -97,6 +100,9 @@ class VectorStamped:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.vector, self.header.frame_id))
 
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
