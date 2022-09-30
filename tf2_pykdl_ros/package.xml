@@ -31,6 +31,8 @@
   <doc_depend>python-sphinx-rtd-theme-pip</doc_depend>
   <doc_depend>python3-yaml</doc_depend>
 
+  <test_depend>catkin_lint_cmake</test_depend>
+
   <export>
     <rosdoc config="rosdoc.yaml" />
   </export>
