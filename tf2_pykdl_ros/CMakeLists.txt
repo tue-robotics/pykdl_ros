@@ -7,17 +7,16 @@ find_package(catkin REQUIRED
 
 catkin_python_setup()
 
-catkin_package(
-  INCLUDE_DIRS
-  LIBRARIES
-  CATKIN_DEPENDS geometry_msgs pykdl_ros tf2_ros
-  DEPENDS
-)
+catkin_package()
 
 if (CATKIN_ENABLE_TESTING)
+  find_package(catkin_lint_cmake REQUIRED)
+  catkin_add_catkin_lint_test()
+
   catkin_add_nosetests(test)
 
-  find_package(catkin REQUIRED COMPONENTS rostest tf2_geometry_msgs)
+  find_package(rostest REQUIRED)
+  find_package(tf2_geometry_msgs REQUIRED)
 
   add_rostest(${CMAKE_CURRENT_SOURCE_DIR}/test/rostest/test_tf2_ros_transform.test)
 endif()
