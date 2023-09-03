@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-from genpy import Time
+from builtin_interfaces.msg import Time
 import PyKDL as kdl
 from std_msgs.msg import Header
 
 
 class FrameStamped:
-    """
-    Stamped version of PyKDL.Frame
-    """
+    """Stamped version of PyKDL.Frame."""
 
     __slots__ = "frame", "header"
 
     def __init__(self, frame: kdl.Frame, stamp: Time, frame_id: str):
         """
-        Constructor
+        Construct a FrameStamped object.
 
         :param frame: frame
         :param stamp: TimeStamp
@@ -49,7 +47,7 @@ class FrameStamped:
         cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
     ) -> FrameStamped:
         """
-        Custom constructor
+        Construct a FrameStamped from XYZ and RPY.
 
         :param x: x
         :param y: y
@@ -68,15 +66,13 @@ class FrameStamped:
 
 
 class VectorStamped:
-    """
-    Stamped version of PyKDL.Vector
-    """
+    """Stamped version of PyKDL.Vector."""
 
     __slots__ = "vector", "header"
 
     def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str):
         """
-        Constructor
+        Construct a VectorStamped object.
 
         :param vector: vector
         :param stamp: TimeStamp
@@ -107,7 +103,7 @@ class VectorStamped:
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
         """
-        Custom constructor
+        Construct a VectorStamped from XYZ.
 
         :param x: x
         :param y: y
@@ -122,7 +118,7 @@ class VectorStamped:
     @classmethod
     def from_framestamped(cls, frame: FrameStamped) -> VectorStamped:
         """
-        Custom constructor, extract vector from the frame
+        Construct a VectorStamped by extracting the vector from a FrameStamped.
 
         :param frame: frame
         :return: Filled object
