@@ -12,7 +12,6 @@ def transform_to_kdl(t: TransformStamped) -> kdl.Frame:
     :param t: The Transform message to convert.
     :return: The converted PyKDL frame.
     """
-
     return kdl.Frame(
         kdl.Rotation.Quaternion(
             t.transform.rotation.x, t.transform.rotation.y, t.transform.rotation.z, t.transform.rotation.w

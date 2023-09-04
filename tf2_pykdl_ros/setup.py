@@ -1,13 +1,26 @@
-#!/usr/bin/env python
+from os import path
+from setuptools import find_packages, setup
 
-from setuptools import setup
-from catkin_pkg.python_setup import generate_distutils_setup
+package_name = "tf2_pykdl_ros"
 
-d = generate_distutils_setup(
-    # #  don't do this unless you want a globally visible script
-    # scripts=['bin/myscript'],
-    packages=["tf2_pykdl_ros"],
-    package_dir={"": "src"},
+package_share = path.join("share", package_name)
+
+setup(
+    name=package_name,
+    version="0.0.0",
+    packages=find_packages(exclude=["test"]),
+    data_files=[
+        (
+            path.join("share", "ament_index", "resource_index", "packages"),
+            [path.join("resource", package_name)],
+        ),
+        (package_share, ["package.xml"]),
+    ],
+    install_requires=["setuptools"],
+    zip_safe=True,
+    maintainer="Matthijs van der Burgh",
+    maintainer_email="matthijs.van.der.burgh@vbti.nl",
+    description="tf2 conversions for pykdl_ros",
+    license="BSD",
+    tests_require=["pytest"],
 )
-
-setup(**d)
