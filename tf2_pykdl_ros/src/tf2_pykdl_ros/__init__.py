@@ -243,3 +243,77 @@ def do_transform_twist(twist: TwistStamped, transform: TransformStamped) -> Twis
 
 
 tf2_ros.TransformRegistration().add(TwistStamped, do_transform_twist)
+
+
+def to_msg_wrench(wrench: WrenchStamped) -> WrenchStampedMsg:
+    """
+    Convert a FrameStamped to a geometry_msgs WrenchStamped message.
+
+    :param wrench: The wrench to convert.
+    :return: The converted Wrench.
+    """
+    msg = WrenchStampedMsg()
+    msg.header = wrench.header
+    force = wrench.wrench.force
+    msg.wrench.force.x = force[0]
+    msg.wrench.force.y = force[1]
+    msg.wrench.force.z = force[2]
+    torque = wrench.wrench.torque
+    msg.wrench.torque.x = torque[0]
+    msg.wrench.torque.y = torque[1]
+    msg.wrench.torque.z = torque[2]
+    return msg
+
+
+tf2_ros.ConvertRegistration().add_convert((WrenchStamped, WrenchStampedMsg), to_msg_wrench)
+tf2_ros.ConvertRegistration().add_to_msg(WrenchStamped, to_msg_wrench)
+
+
+def from_msg_wrench(msg: WrenchStampedMsg) -> WrenchStamped:
+    """
+    Convert a WrenchStamped message to a stamped WrenchStamped.
+
+    :param msg: The WrenchStamped message to convert.
+    :return: The timestamped converted PyKDL wrench.
+    """
+    if not isinstance(msg, WrenchStampedMsg):
+        raise TypeError(f"msg should be WrenchStamped, not '{type(msg)}'")
+    f = msg.wrench.force
+    t = msg.wrench.torque
+    force = kdl.Vector(f.x, f.y, f.z)
+    torque = kdl.Vector(t.x, t.y, t.z)
+    wrench = kdl.Wrench(force, torque)
+    return WrenchStamped(wrench, msg.header.stamp, msg.header.frame_id)
+
+
+tf2_ros.ConvertRegistration().add_convert((WrenchStampedMsg, WrenchStamped), from_msg_wrench)
+tf2_ros.ConvertRegistration().add_from_msg(WrenchStamped, from_msg_wrench)
+
+
+def convert_wrench(wrench: WrenchStamped) -> WrenchStamped:
+    """
+    Convert a stamped PyKDL Wrench to a stamped PyKDL Wrench.
+
+    :param wrench: The wrench to convert.
+    :return: The timestamped converted PyKDL wrench.
+    """
+    return WrenchStamped(kdl.Frame(wrench.wrench), wrench.header.stamp, wrench.header.frame_id)
+
+
+tf2_ros.ConvertRegistration().add_convert((WrenchStamped, WrenchStamped), convert_wrench)
+
+
+def do_transform_wrench(wrench: WrenchStamped, transform: TransformStamped) -> WrenchStamped:
+    """
+    Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
+
+    :param wrench: The PyKDL wrench to transform.
+    :param transform: The transform to apply.
+    :return: The transformed PyKDL wrench.
+    """
+    assert transform.child_frame_id == wrench.header.frame_id
+    res_wrench = transform_to_kdl(transform) * wrench.wrench
+    return WrenchStamped(res_wrench, transform.header.stamp, transform.header.frame_id)
+
+
+tf2_ros.TransformRegistration().add(WrenchStamped, do_transform_wrench)
