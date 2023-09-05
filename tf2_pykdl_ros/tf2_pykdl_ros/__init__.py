@@ -125,7 +125,7 @@ def from_msg_frame(msg: PoseStamped) -> FrameStamped:
     Convert a PoseStamped message to a stamped FrameStamped.
 
     :param msg: The PoseStamped message to convert.
-    :return: The timestamped converted PyKDL vector.
+    :return: The timestamped converted PyKDL frame.
     """
     if not isinstance(msg, PoseStamped):
         raise TypeError(f"msg should be PoseStamped, not '{type(msg)}'")
@@ -154,7 +154,7 @@ def convert_frame(frame: FrameStamped) -> FrameStamped:
 tf2_ros.ConvertRegistration().add_convert((FrameStamped, FrameStamped), convert_frame)
 
 
-def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> TransformStamped:
+def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> FrameStamped:
     """
     Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
 
