@@ -1,7 +1,13 @@
 from typing import Union
-from geometry_msgs.msg import PointStamped, PoseStamped, TransformStamped
+from geometry_msgs.msg import (
+    PointStamped,
+    PoseStamped,
+    TransformStamped,
+    TwistStamped as TwistStampedMsg,
+    WrenchStamped as WrenchStampedMsg,
+)
 import PyKDL as kdl
-from pykdl_ros import VectorStamped, FrameStamped
+from pykdl_ros import VectorStamped, FrameStamped, TwistStamped, WrenchStamped
 import tf2_ros
 
 
@@ -163,3 +169,77 @@ def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> Tran
 
 
 tf2_ros.TransformRegistration().add(FrameStamped, do_transform_frame)
+
+
+def to_msg_twist(twist: TwistStamped) -> TwistStampedMsg:
+    """
+    Convert a FrameStamped to a geometry_msgs TwistStamped message.
+
+    :param twist: The frame to convert.
+    :return: The converted Twist.
+    """
+    msg = TwistStampedMsg()
+    msg.header = twist.header
+    vel = twist.twist.vel
+    msg.twist.linear.x = vel[0]
+    msg.twist.linear.y = vel[1]
+    msg.twist.linear.z = vel[2]
+    rot = twist.twist.rot
+    msg.twist.angular.x = rot[0]
+    msg.twist.angular.y = rot[1]
+    msg.twist.angular.z = rot[2]
+    return msg
+
+
+tf2_ros.ConvertRegistration().add_convert((TwistStamped, TwistStampedMsg), to_msg_twist)
+tf2_ros.ConvertRegistration().add_to_msg(TwistStamped, to_msg_twist)
+
+
+def from_msg_twist(msg: TwistStampedMsg) -> TwistStamped:
+    """
+    Convert a TwistStamped message to a stamped TwistStamped.
+
+    :param msg: The TwistStamped message to convert.
+    :return: The timestamped converted PyKDL vector.
+    """
+    if not isinstance(msg, TwistStampedMsg):
+        raise TypeError(f"msg should be TwistStamped, not '{type(msg)}'")
+    lin = msg.twist.linear
+    vel = kdl.Vector(lin.x, lin.y, lin.z)
+    ang = msg.twist.angular
+    rot = kdl.Vector(ang.x, ang.y, ang.z)
+    twist = kdl.Twist(vel, rot)
+    return TwistStamped(twist, msg.header.stamp, msg.header.frame_id)
+
+
+tf2_ros.ConvertRegistration().add_convert((TwistStampedMsg, TwistStamped), from_msg_twist)
+tf2_ros.ConvertRegistration().add_from_msg(TwistStamped, from_msg_twist)
+
+
+def convert_twist(twist: TwistStamped) -> TwistStamped:
+    """
+    Convert a stamped PyKDL Twist to a stamped PyKDL Twist.
+
+    :param twist: The twist to convert.
+    :return: The timestamped converted PyKDL twist.
+    """
+    return TwistStamped(kdl.Frame(twist.twist), twist.header.stamp, twist.header.frame_id)
+
+
+tf2_ros.ConvertRegistration().add_convert((TwistStamped, TwistStamped), convert_twist)
+
+
+def do_transform_twist(twist: TwistStamped, transform: TransformStamped) -> TwistStamped:
+    """
+    Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
+
+    :param twist: The PyKDL twist to transform.
+    :param transform: The transform to apply.
+    :return: The transformed PyKDL twist.
+    """
+    assert transform.child_frame_id == twist.header.frame_id
+    res_twist = transform_to_kdl(transform) * twist.twist
+    return TwistStamped(res_twist, transform.header.stamp, transform.header.frame_id)
+
+
+tf2_ros.TransformRegistration().add(TwistStamped, do_transform_twist)
