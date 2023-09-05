@@ -27,10 +27,10 @@ class FrameStamped:
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self):
-        xyz = f"(x={self.frame.p.x()}, y={self.frame.p.y()}, z={self.frame.p.z()})"
+        pos = f"(x={self.frame.p.x()}, y={self.frame.p.y()}, z={self.frame.p.z()})"
         r, p, y = self.frame.M.GetRPY()
-        rpy = f"(r={r}, p={p}, y={y})"
-        return f"FrameStamped(pos:{xyz}, rot:{rpy} @ {self.header.frame_id})"
+        rot = f"(r={r}, p={p}, y={y})"
+        return f"FrameStamped({pos=}, {rot=} @ {self.header.frame_id})"
 
     def __eq__(self, other):
         if isinstance(other, FrameStamped):
