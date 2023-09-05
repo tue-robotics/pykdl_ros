@@ -67,6 +67,63 @@ class FrameStamped:
         return cls(frame, stamp, frame_id)
 
 
+class TwistStamped:
+    """Stamped version of PyKDL.Twist."""
+
+    __slots__ = "twist", "header"
+
+    def __init__(self, twist: kdl.Twist, stamp: Time, frame_id: str):
+        """
+        Construct a TwistStamped object.
+
+        :param twist: twist
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        """
+        assert isinstance(twist, kdl.Twist)
+        assert isinstance(stamp, Time)
+        assert isinstance(frame_id, str)
+        self.twist = twist
+        self.header = Header(frame_id=frame_id, stamp=stamp)
+
+    def __repr__(self):
+        vel = f"(x={self.twist.vel.x()}, y={self.twist.vel.y()}, z={self.twist.vel.z()})"
+        rot = f"(r={self.twist.rot.x()}, p={self.twist.rot.y()}, y={self.twist.rot.z()})"
+        return f"TwistStamped({vel=}, {rot=} @ {self.header.frame_id})"
+
+    def __eq__(self, other):
+        if isinstance(other, TwistStamped):
+            return self.twist == other.twist and self.header.frame_id == other.header.frame_id
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.twist, self.header.frame_id))
+
+    @classmethod
+    def from_xyz_rpy(cls, vx: float, vy: float, vz: float, wx: float, wy: float, wz: float, stamp: Time, frame_id: str):
+        """
+        Construct a TwistStamped from velocity and XYZ and RPY.
+
+        :param vx: vx
+        :param vy: vy
+        :param vz: vz
+        :param wx: wx
+        :param wy: wy
+        :param wz: wz
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        linear = kdl.Vector(vx, vy, vz)
+        angular = kdl.Vector(wx, wy, wz)
+        twist = kdl.Twist(linear, angular)
+        return cls(twist, stamp, frame_id)
+
+
 class VectorStamped:
     """
     Stamped version of PyKDL.Vector
