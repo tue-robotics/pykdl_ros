@@ -181,3 +181,62 @@ class VectorStamped:
         :return: Filled object
         """
         return cls(frame.frame.p, frame.header.stamp, frame.header.frame_id)
+
+
+class WrenchStamped:
+    """Stamped version of PyKDL.Wrench."""
+
+    __slots__ = "wrench", "header"
+
+    def __init__(self, wrench: kdl.Wrench, stamp: Time, frame_id: str):
+        """
+        Construct a WrenchStamped object.
+
+        :param wrench: wrench
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        """
+        assert isinstance(wrench, kdl.Wrench)
+        assert isinstance(stamp, Time)
+        assert isinstance(frame_id, str)
+        self.wrench = wrench
+        self.header = Header(frame_id=frame_id, stamp=stamp)
+
+    def __repr__(self):
+        force = f"(x={self.wrench.force.x()}, y={self.wrench.force.y()}, z={self.wrench.force.z()})"
+        torque = f"(x={self.wrench.torque.x()}, y={self.wrench.torque.y()}, z={self.wrench.torque.z()})"
+        return f"WrenchStamped({force=}, {torque=} @ {self.header.frame_id})"
+
+    def __eq__(self, other):
+        if isinstance(other, WrenchStamped):
+            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.wrench, self.header.frame_id))
+
+    @classmethod
+    def from_fxfyfz_txtytz(
+        cls, fx: float, fy: float, fz: float, tx: float, ty: float, tz: float, stamp: Time, frame_id: str
+    ):
+        """
+        Construct a WrenchStamped from force and torque in XYZ.
+
+        :param fx: fx
+        :param fy: fy
+        :param fz: fz
+        :param tx: tx
+        :param ty: ty
+        :param tz: tz
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        force = kdl.Vector(fx, fy, fz)
+        torque = kdl.Vector(tx, ty, tz)
+        wrench = kdl.Wrench(force, torque)
+        return cls(wrench, stamp, frame_id)
