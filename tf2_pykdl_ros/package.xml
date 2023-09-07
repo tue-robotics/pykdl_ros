@@ -24,6 +24,7 @@
   <test_depend>builtin_interfaces</test_depend>
   <test_depend>rclpy</test_depend>
   <test_depend>tf2_geometry_msgs</test_depend>
+  <test_depend>python3-flake8-isort</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>
