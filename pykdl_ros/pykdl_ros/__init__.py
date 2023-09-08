@@ -43,6 +43,18 @@ class FrameStamped:
         return hash((self.frame, self.header.frame_id))
 
     @classmethod
+    def identity(cls, stamp: Time, frame_id: str) -> FrameStamped:
+        """
+        Construct a FrameStamped object with identity frame.
+
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        frame = kdl.Frame.Identity()
+        return cls(frame, stamp, frame_id)
+
+    @classmethod
     def from_xyz_rpy(
         cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
     ) -> FrameStamped:
@@ -102,6 +114,18 @@ class TwistStamped:
         return hash((self.twist, self.header.frame_id))
 
     @classmethod
+    def zero(cls, stamp: Time, frame_id: str) -> TwistStamped:
+        """
+        Construct a TwistStamped object with zero velocity and angular velocity.
+
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        twist = kdl.Twist.Zero()
+        return cls(twist, stamp, frame_id)
+
+    @classmethod
     def from_xyz_rpy(cls, vx: float, vy: float, vz: float, wx: float, wy: float, wz: float, stamp: Time, frame_id: str):
         """
         Construct a TwistStamped from velocity and XYZ and RPY.
@@ -156,6 +180,18 @@ class VectorStamped:
 
     def __hash__(self):
         return hash((self.vector, self.header.frame_id))
+
+    @classmethod
+    def zero(cls, stamp: Time, frame_id: str) -> VectorStamped:
+        """
+        Construct a VectorStamped object with zero vector.
+
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        vector = kdl.Vector.Zero()
+        return cls(vector, stamp, frame_id)
 
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
@@ -218,6 +254,18 @@ class WrenchStamped:
 
     def __hash__(self):
         return hash((self.wrench, self.header.frame_id))
+
+    @classmethod
+    def zero(cls, stamp: Time, frame_id: str) -> WrenchStamped:
+        """
+        Construct a WrenchStamped object with zero force and torque.
+
+        :param stamp: TimeStamp
+        :param frame_id: Frame ID
+        :return: Filled object
+        """
+        wrench = kdl.Wrench.Zero()
+        return cls(wrench, stamp, frame_id)
 
     @classmethod
     def from_fxfyfz_txtytz(
