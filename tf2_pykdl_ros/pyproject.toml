@@ -3,6 +3,7 @@ line-length = 120
 
 [tool.isort]
 line_length = 120
+profile = "black"
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning"]
