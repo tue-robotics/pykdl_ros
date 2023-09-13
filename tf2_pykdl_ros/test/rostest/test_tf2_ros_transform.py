@@ -1,23 +1,21 @@
 #! /usr/bin/env python
 
 import unittest
+from typing import ClassVar
 
 import PyKDL as kdl
-from pykdl_ros import VectorStamped, FrameStamped, TwistStamped, WrenchStamped
 import rospy
-
+import tf2_geometry_msgs  # noqa: F401
 import tf2_ros
-
-# noinspection PyUnresolvedReferences
-import tf2_geometry_msgs
-
-# noinspection PyUnresolvedReferences
-import tf2_pykdl_ros
-
 from geometry_msgs.msg import TransformStamped
+from pykdl_ros import FrameStamped, TwistStamped, VectorStamped, WrenchStamped
+
+import tf2_pykdl_ros  # noqa: F401
 
 
 class TestTransform(unittest.TestCase):
+    buffer: ClassVar[tf2_ros.Buffer]
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.buffer = tf2_ros.Buffer()
