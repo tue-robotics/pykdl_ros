@@ -4,15 +4,13 @@
   <name>pykdl_ros</name>
   <version>0.0.0</version>
   <description>Stamped PyKDL classes</description>
-
-  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
-
   <maintainer email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</maintainer>
-
   <license>BSD</license>
 
   <url type="bugtracker">https://github.com/tue-robotics/pykdl_ros/issues</url>
   <url type="repository">https://github.com/tue-robotics/pykdl_ros</url>
+
+  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
 
   <exec_depend>builtin_interfaces</exec_depend>
   <exec_depend>python_orocos_kdl_vendor</exec_depend>
