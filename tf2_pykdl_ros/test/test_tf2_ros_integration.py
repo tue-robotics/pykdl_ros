@@ -1,18 +1,26 @@
 import unittest
+from typing import ClassVar
 
 import PyKDL as kdl
 import tf2_geometry_msgs  # noqa: F401
 import tf2_ros
 from builtin_interfaces.msg import Time
-from geometry_msgs.msg import PointStamped, PoseStamped, TransformStamped
-from geometry_msgs.msg import TwistStamped as TwistStampedMsg
-from geometry_msgs.msg import WrenchStamped as WrenchStampedMsg
+from geometry_msgs.msg import (
+    PointStamped,
+    PoseStamped,
+    TransformStamped,
+    TwistStamped as TwistStampedMsg,
+    WrenchStamped as WrenchStampedMsg,
+)
 from pykdl_ros import FrameStamped, TwistStamped, VectorStamped, WrenchStamped
 
 import tf2_pykdl_ros  # noqa: F401
 
 
 class TestRegistration(unittest.TestCase):
+    convert_reg: ClassVar[tf2_ros.ConvertRegistration]
+    transform_reg: ClassVar[tf2_ros.TransformRegistration]
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.convert_reg = tf2_ros.ConvertRegistration()
@@ -207,6 +215,9 @@ class TestConvert(unittest.TestCase):
 
 
 class TestTransform(unittest.TestCase):
+    registration: ClassVar[tf2_ros.TransformRegistration]
+    t: ClassVar[TransformStamped]
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.registration = tf2_ros.TransformRegistration()

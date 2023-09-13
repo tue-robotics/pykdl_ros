@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import unittest
+from typing import ClassVar
 
 import PyKDL as kdl
 import rclpy
@@ -15,6 +16,10 @@ import tf2_pykdl_ros  # noqa: F401
 
 
 class TestTransform(unittest.TestCase):
+    buffer: ClassVar[tf2_ros.Buffer]
+    context: ClassVar[rclpy.context.Context]
+    node: ClassVar[rclpy.node.Node]
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.context = rclpy.context.Context()
