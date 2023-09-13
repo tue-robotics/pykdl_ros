@@ -4,14 +4,13 @@
   <name>tf2_pykdl_ros</name>
   <version>0.0.0</version>
   <description>tf2 conversions for pykdl_ros</description>
-  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
-
   <maintainer email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</maintainer>
-
   <license>BSD</license>
 
   <url type="bugtracker">https://github.com/tue-robotics/pykdl_ros/issues</url>
   <url type="repository">https://github.com/tue-robotics/pykdl_ros</url>
+
+  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
 
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>pykdl_ros</exec_depend>
@@ -20,10 +19,13 @@
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_mypy</test_depend>
   <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
   <test_depend>builtin_interfaces</test_depend>
   <test_depend>rclpy</test_depend>
   <test_depend>tf2_geometry_msgs</test_depend>
+  <test_depend>python3-flake8-isort</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>

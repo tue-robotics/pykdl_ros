@@ -1,4 +1,5 @@
 from os import path
+
 from setuptools import find_packages, setup
 
 package_name = "tf2_pykdl_ros"

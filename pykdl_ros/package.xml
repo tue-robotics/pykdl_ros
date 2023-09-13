@@ -4,15 +4,13 @@
   <name>pykdl_ros</name>
   <version>0.0.0</version>
   <description>Stamped PyKDL classes</description>
-
-  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
-
   <maintainer email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</maintainer>
-
   <license>BSD</license>
 
   <url type="bugtracker">https://github.com/tue-robotics/pykdl_ros/issues</url>
   <url type="repository">https://github.com/tue-robotics/pykdl_ros</url>
+
+  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
 
   <exec_depend>builtin_interfaces</exec_depend>
   <exec_depend>python_orocos_kdl_vendor</exec_depend>
@@ -20,7 +18,10 @@
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_mypy</test_depend>
   <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
+  <test_depend>python3-flake8-isort</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>
