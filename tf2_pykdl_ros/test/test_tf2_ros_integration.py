@@ -26,66 +26,66 @@ class TestRegistration(unittest.TestCase):
         cls.convert_reg = tf2_ros.ConvertRegistration()
         cls.transform_reg = tf2_ros.TransformRegistration()
 
-    def test_vector_stamped_from_msg(self):
+    def test_vector_stamped_from_msg(self) -> None:
         self.convert_reg.get_from_msg(VectorStamped)
 
-    def test_vector_stamped_to_msg(self):
+    def test_vector_stamped_to_msg(self) -> None:
         self.convert_reg.get_to_msg(VectorStamped)
 
-    def test_vector_stamped_convert(self):
+    def test_vector_stamped_convert(self) -> None:
         self.convert_reg.get_convert((PointStamped, VectorStamped))
         self.convert_reg.get_convert((PoseStamped, VectorStamped))
         self.convert_reg.get_convert((VectorStamped, PointStamped))
         self.convert_reg.get_convert((VectorStamped, VectorStamped))
 
-    def test_vector_stamped_transform(self):
+    def test_vector_stamped_transform(self) -> None:
         self.transform_reg.get(VectorStamped)
 
-    def test_frame_stamped_from_msg(self):
+    def test_frame_stamped_from_msg(self) -> None:
         self.convert_reg.get_from_msg(FrameStamped)
 
-    def test_frame_stamped_to_msg(self):
+    def test_frame_stamped_to_msg(self) -> None:
         self.convert_reg.get_to_msg(FrameStamped)
 
-    def test_frame_stamped_convert(self):
+    def test_frame_stamped_convert(self) -> None:
         self.convert_reg.get_convert((PoseStamped, FrameStamped))
         self.convert_reg.get_convert((FrameStamped, PoseStamped))
         self.convert_reg.get_convert((FrameStamped, FrameStamped))
 
-    def test_frame_stamped_transform(self):
+    def test_frame_stamped_transform(self) -> None:
         self.transform_reg.get(FrameStamped)
 
-    def test_twist_stamped_from_msg(self):
+    def test_twist_stamped_from_msg(self) -> None:
         self.convert_reg.get_from_msg(TwistStamped)
 
-    def test_twist_stamp_to_msg(self):
+    def test_twist_stamp_to_msg(self) -> None:
         self.convert_reg.get_to_msg(TwistStamped)
 
-    def test_twist_stamp_convert(self):
+    def test_twist_stamp_convert(self) -> None:
         self.convert_reg.get_convert((TwistStampedMsg, TwistStamped))
         self.convert_reg.get_convert((TwistStamped, TwistStampedMsg))
         self.convert_reg.get_convert((TwistStamped, TwistStamped))
 
-    def test_twist_stamped_transform(self):
+    def test_twist_stamped_transform(self) -> None:
         self.transform_reg.get(TwistStamped)
 
-    def test_wrench_stamped_from_msg(self):
+    def test_wrench_stamped_from_msg(self) -> None:
         self.convert_reg.get_from_msg(WrenchStamped)
 
-    def test_wrench_stamped_to_msg(self):
+    def test_wrench_stamped_to_msg(self) -> None:
         self.convert_reg.get_to_msg(WrenchStamped)
 
-    def test_wrench_stamped_convert(self):
+    def test_wrench_stamped_convert(self) -> None:
         self.convert_reg.get_convert((WrenchStampedMsg, WrenchStamped))
         self.convert_reg.get_convert((WrenchStamped, WrenchStampedMsg))
         self.convert_reg.get_convert((WrenchStamped, WrenchStamped))
 
-    def test_wrench_stamped_transform(self):
+    def test_wrench_stamped_transform(self) -> None:
         self.transform_reg.get(WrenchStamped)
 
 
 class TestConvert(unittest.TestCase):
-    def test_point_stamped_vector_stamped(self):
+    def test_point_stamped_vector_stamped(self) -> None:
         p = PointStamped()
         p.header.frame_id = "map"
         p.header.stamp = Time(sec=4)
@@ -100,7 +100,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(v.header.stamp, p.header.stamp)
         self.assertEqual(v.header.frame_id, p.header.frame_id)
 
-    def test_vector_stamped_point_stamped(self):
+    def test_vector_stamped_point_stamped(self) -> None:
         v = VectorStamped.from_xyz(1, 2, 3, Time(sec=4), "map")
         p = tf2_ros.convert(v, PointStamped)
         self.assertIsInstance(p, PointStamped)
@@ -110,7 +110,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(p.header.stamp, v.header.stamp)
         self.assertEqual(p.header.frame_id, v.header.frame_id)
 
-    def test_pose_stamp_frame_stamped(self):
+    def test_pose_stamp_frame_stamped(self) -> None:
         p = PoseStamped()
         p.header.frame_id = "map"
         p.header.stamp = Time(sec=4)
@@ -130,7 +130,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(f.header.stamp, p.header.stamp)
         self.assertEqual(f.header.frame_id, p.header.frame_id)
 
-    def test_frame_stamped_pose_stamped(self):
+    def test_frame_stamped_pose_stamped(self) -> None:
         f = FrameStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, Time(sec=4), "map")
         p = tf2_ros.convert(f, PoseStamped)
         self.assertIsInstance(p, PoseStamped)
@@ -145,7 +145,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(p.header.stamp, f.header.stamp)
         self.assertEqual(p.header.frame_id, f.header.frame_id)
 
-    def test_twist_stamped_msg_twist_stamped(self):
+    def test_twist_stamped_msg_twist_stamped(self) -> None:
         msg = TwistStampedMsg()
         msg.header.frame_id = "map"
         msg.header.stamp = Time(sec=4)
@@ -166,7 +166,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(t.header.stamp, msg.header.stamp)
         self.assertEqual(t.header.frame_id, msg.header.frame_id)
 
-    def test_twist_stamped_twist_stamped_msg(self):
+    def test_twist_stamped_twist_stamped_msg(self) -> None:
         t = TwistStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, Time(sec=4), "map")
         msg = tf2_ros.convert(t, TwistStampedMsg)
         self.assertIsInstance(msg, TwistStampedMsg)
@@ -179,7 +179,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(msg.header.stamp, t.header.stamp)
         self.assertEqual(msg.header.frame_id, t.header.frame_id)
 
-    def test_wrench_stamped_msg_wrench_stamped(self):
+    def test_wrench_stamped_msg_wrench_stamped(self) -> None:
         msg = WrenchStampedMsg()
         msg.header.frame_id = "map"
         msg.header.stamp = Time(sec=4)
@@ -200,7 +200,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(w.header.stamp, msg.header.stamp)
         self.assertEqual(w.header.frame_id, msg.header.frame_id)
 
-    def test_wrench_stamped_wrench_stamped_msg(self):
+    def test_wrench_stamped_wrench_stamped_msg(self) -> None:
         w = WrenchStamped.from_fxfyfz_txtytz(1, 2, 3, 4, 5, 6, Time(sec=4), "map")
         msg = tf2_ros.convert(w, WrenchStampedMsg)
         self.assertIsInstance(msg, WrenchStampedMsg)
@@ -229,7 +229,7 @@ class TestTransform(unittest.TestCase):
         cls.t.header.frame_id = "a"
         cls.t.child_frame_id = "b"
 
-    def test_transform(self):
+    def test_transform(self) -> None:
         f = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), Time(sec=2), "b")
         transform_func = self.registration.get(type(f))
         f_b = transform_func(f, self.t)
@@ -241,7 +241,7 @@ class TestTransform(unittest.TestCase):
             (0.43595284407356577, -0.44443511344300074, 0.310622451065704, 0.7182870182434113),
         )
 
-    def test_transform_incorrect_frame(self):
+    def test_transform_incorrect_frame(self) -> None:
         f2 = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), Time(sec=2), "a")
         transform_func = self.registration.get(type(f2))
         with self.assertRaises(AssertionError):

@@ -43,21 +43,21 @@ class TestTransform(unittest.TestCase):
         cls.node.destroy_node()
         rclpy.shutdown(context=cls.context)
 
-    def test_lookup_transform(self):
+    def test_lookup_transform(self) -> None:
         out = self.buffer.lookup_transform("a", "b", Time(sec=2), Duration(seconds=2))
         self.assertEqual(out.transform.translation.x, 1)
         self.assertEqual(out.transform.rotation.x, 1)
         self.assertEqual(out.header.frame_id, "a")
         self.assertEqual(out.child_frame_id, "b")
 
-    def test_transform_vector(self):
+    def test_transform_vector(self) -> None:
         v = kdl.Vector(1, 2, 3)
         out: VectorStamped = self.buffer.transform(VectorStamped(v, Time(sec=2), "a"), "b")
         self.assertEqual(out.vector.x(), 0)
         self.assertEqual(out.vector.y(), -2)
         self.assertEqual(out.vector.z(), -3)
 
-    def test_transform_frame(self):
+    def test_transform_frame(self) -> None:
         f = kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3))
         out: FrameStamped = self.buffer.transform(FrameStamped(f, Time(sec=2), "a"), "b")
         self.assertEqual(out.frame.p.x(), 0)
@@ -68,7 +68,7 @@ class TestTransform(unittest.TestCase):
             (0.43595284407356577, -0.44443511344300074, 0.310622451065704, 0.7182870182434113),
         )
 
-    def test_transform_twist(self):
+    def test_transform_twist(self) -> None:
         t = kdl.Twist(kdl.Vector(1, 2, 3), kdl.Vector(4, 5, 6))
         out: TwistStamped = self.buffer.transform(TwistStamped(t, Time(sec=2), "a"), "b")
         self.assertEqual(out.twist.vel.x(), 1)
@@ -78,7 +78,7 @@ class TestTransform(unittest.TestCase):
         self.assertEqual(out.twist.rot.y(), -5)
         self.assertEqual(out.twist.rot.z(), -6)
 
-    def test_transform_wrench(self):
+    def test_transform_wrench(self) -> None:
         w = kdl.Wrench(kdl.Vector(1, 2, 3), kdl.Vector(4, 5, 6))
         out: WrenchStamped = self.buffer.transform(WrenchStamped(w, Time(sec=2), "a"), "b")
         self.assertEqual(out.wrench.force.x(), 1)

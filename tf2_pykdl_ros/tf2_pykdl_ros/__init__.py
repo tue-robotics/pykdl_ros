@@ -67,7 +67,7 @@ tf2_ros.ConvertRegistration().add_convert((PoseStamped, VectorStamped), from_msg
 tf2_ros.ConvertRegistration().add_from_msg(VectorStamped, from_msg_vector)
 
 
-def convert_vector(vector: VectorStamped):
+def convert_vector(vector: VectorStamped) -> VectorStamped:
     """
     Convert a stamped PyKDL Vector to a stamped PyKDL Vector.
 
