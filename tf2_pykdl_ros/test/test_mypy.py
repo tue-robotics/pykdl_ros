@@ -18,7 +18,7 @@ from ament_mypy.main import main
 
 @pytest.mark.mypy
 @pytest.mark.linter
-def test_mypy():
+def test_mypy() -> None:
     try:
         import importlib.resources as _  # noqa: F401
     except ModuleNotFoundError:
@@ -28,4 +28,4 @@ def test_mypy():
         # There is a bug in mypy that manifests when this try/except import pattern is
         # used: https://github.com/python/mypy/issues/1153
         pytest.skip("This platform does not support mypy checking of importlib properly")
-    assert main(argv=[]) == 0, "Found errors"
+    assert main(argv=["--config", ""]) == 0, "Found errors"

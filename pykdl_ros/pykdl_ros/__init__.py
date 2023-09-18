@@ -24,22 +24,22 @@ class FrameStamped:
         self.frame = frame
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         pos = f"(x={self.frame.p.x()}, y={self.frame.p.y()}, z={self.frame.p.z()})"
         r, p, y = self.frame.M.GetRPY()
         rot = f"(r={r}, p={p}, y={y})"
         return f"FrameStamped({pos=}, {rot=} @ {self.header.frame_id})"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, FrameStamped):
-            return self.frame == other.frame and self.header.frame_id == other.header.frame_id
+            return self.frame == other.frame and self.header.frame_id == other.header.frame_id  # type: ignore
         else:
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.frame, self.header.frame_id))
 
     @classmethod
@@ -82,7 +82,7 @@ class TwistStamped:
 
     __slots__ = "twist", "header"
 
-    def __init__(self, twist: kdl.Twist, stamp: Time, frame_id: str):
+    def __init__(self, twist: kdl.Twist, stamp: Time, frame_id: str) -> None:
         """
         Construct a TwistStamped object.
 
@@ -96,21 +96,21 @@ class TwistStamped:
         self.twist = twist
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         vel = f"(x={self.twist.vel.x()}, y={self.twist.vel.y()}, z={self.twist.vel.z()})"
         rot = f"(r={self.twist.rot.x()}, p={self.twist.rot.y()}, y={self.twist.rot.z()})"
         return f"TwistStamped({vel=}, {rot=} @ {self.header.frame_id})"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, TwistStamped):
-            return self.twist == other.twist and self.header.frame_id == other.header.frame_id
+            return self.twist == other.twist and self.header.frame_id == other.header.frame_id  # type: ignore
         else:
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.twist, self.header.frame_id))
 
     @classmethod
@@ -126,7 +126,9 @@ class TwistStamped:
         return cls(twist, stamp, frame_id)
 
     @classmethod
-    def from_xyz_rpy(cls, vx: float, vy: float, vz: float, wx: float, wy: float, wz: float, stamp: Time, frame_id: str):
+    def from_xyz_rpy(
+        cls, vx: float, vy: float, vz: float, wx: float, wy: float, wz: float, stamp: Time, frame_id: str
+    ) -> TwistStamped:
         """
         Construct a TwistStamped from velocity and XYZ and RPY.
 
@@ -151,7 +153,7 @@ class VectorStamped:
 
     __slots__ = "vector", "header"
 
-    def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str):
+    def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str) -> None:
         """
         Construct a VectorStamped object.
 
@@ -165,20 +167,20 @@ class VectorStamped:
         self.vector = vector
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         xyz = f"(x={self.vector.x()}, y={self.vector.y()}, z={self.vector.z()})"
         return f"VectorStamped({xyz} @ {self.header.frame_id})"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, VectorStamped):
-            return self.vector == other.vector and self.header.frame_id == other.header.frame_id
+            return self.vector == other.vector and self.header.frame_id == other.header.frame_id  # type: ignore
         else:
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.vector, self.header.frame_id))
 
     @classmethod
@@ -224,7 +226,7 @@ class WrenchStamped:
 
     __slots__ = "wrench", "header"
 
-    def __init__(self, wrench: kdl.Wrench, stamp: Time, frame_id: str):
+    def __init__(self, wrench: kdl.Wrench, stamp: Time, frame_id: str) -> None:
         """
         Construct a WrenchStamped object.
 
@@ -238,21 +240,21 @@ class WrenchStamped:
         self.wrench = wrench
         self.header = Header(frame_id=frame_id, stamp=stamp)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         force = f"(x={self.wrench.force.x()}, y={self.wrench.force.y()}, z={self.wrench.force.z()})"
         torque = f"(x={self.wrench.torque.x()}, y={self.wrench.torque.y()}, z={self.wrench.torque.z()})"
         return f"WrenchStamped({force=}, {torque=} @ {self.header.frame_id})"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, WrenchStamped):
-            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id
+            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id  # type: ignore
         else:
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.wrench, self.header.frame_id))
 
     @classmethod
@@ -270,7 +272,7 @@ class WrenchStamped:
     @classmethod
     def from_fxfyfz_txtytz(
         cls, fx: float, fy: float, fz: float, tx: float, ty: float, tz: float, stamp: Time, frame_id: str
-    ):
+    ) -> WrenchStamped:
         """
         Construct a WrenchStamped from force and torque in XYZ.
 
