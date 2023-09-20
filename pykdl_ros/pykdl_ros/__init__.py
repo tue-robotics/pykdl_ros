@@ -21,8 +21,8 @@ class FrameStamped:
         assert isinstance(frame, kdl.Frame)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
-        self.frame = frame
-        self.header = Header(frame_id=frame_id, stamp=stamp)
+        self.frame: kdl.Frame = frame
+        self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self) -> str:
         pos = f"(x={self.frame.p.x()}, y={self.frame.p.y()}, z={self.frame.p.z()})"
@@ -93,8 +93,8 @@ class TwistStamped:
         assert isinstance(twist, kdl.Twist)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
-        self.twist = twist
-        self.header = Header(frame_id=frame_id, stamp=stamp)
+        self.twist: kdl.Twist = twist
+        self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self) -> str:
         vel = f"(x={self.twist.vel.x()}, y={self.twist.vel.y()}, z={self.twist.vel.z()})"
@@ -164,8 +164,8 @@ class VectorStamped:
         assert isinstance(vector, kdl.Vector)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
-        self.vector = vector
-        self.header = Header(frame_id=frame_id, stamp=stamp)
+        self.vector: kdl.Vector = vector
+        self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self) -> str:
         xyz = f"(x={self.vector.x()}, y={self.vector.y()}, z={self.vector.z()})"
@@ -237,8 +237,8 @@ class WrenchStamped:
         assert isinstance(wrench, kdl.Wrench)
         assert isinstance(stamp, Time)
         assert isinstance(frame_id, str)
-        self.wrench = wrench
-        self.header = Header(frame_id=frame_id, stamp=stamp)
+        self.wrench: kdl.Wrench = wrench
+        self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
     def __repr__(self) -> str:
         force = f"(x={self.wrench.force.x()}, y={self.wrench.force.y()}, z={self.wrench.force.z()})"
