@@ -223,7 +223,7 @@ def convert_twist(twist: TwistStamped) -> TwistStamped:
     :param twist: The twist to convert.
     :return: The timestamped converted PyKDL twist.
     """
-    return TwistStamped(kdl.Frame(twist.twist), twist.header.stamp, twist.header.frame_id)
+    return TwistStamped(kdl.Twist(twist.twist), twist.header.stamp, twist.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((TwistStamped, TwistStamped), convert_twist)
@@ -297,7 +297,7 @@ def convert_wrench(wrench: WrenchStamped) -> WrenchStamped:
     :param wrench: The wrench to convert.
     :return: The timestamped converted PyKDL wrench.
     """
-    return WrenchStamped(kdl.Frame(wrench.wrench), wrench.header.stamp, wrench.header.frame_id)
+    return WrenchStamped(kdl.Wrench(wrench.wrench), wrench.header.stamp, wrench.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((WrenchStamped, WrenchStamped), convert_wrench)
