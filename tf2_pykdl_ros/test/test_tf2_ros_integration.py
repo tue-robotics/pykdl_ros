@@ -35,6 +35,8 @@ class TestRegistration(unittest.TestCase):
     def test_vector_stamped_convert(self) -> None:
         self.convert_reg.get_convert((PointStamped, VectorStamped))
         self.convert_reg.get_convert((PoseStamped, VectorStamped))
+        self.convert_reg.get_convert((TransformStamped, VectorStamped))
+
         self.convert_reg.get_convert((VectorStamped, PointStamped))
         self.convert_reg.get_convert((VectorStamped, VectorStamped))
 
@@ -48,8 +50,13 @@ class TestRegistration(unittest.TestCase):
         self.convert_reg.get_to_msg(FrameStamped)
 
     def test_frame_stamped_convert(self) -> None:
+        self.convert_reg.get_convert((PointStamped, FrameStamped))
         self.convert_reg.get_convert((PoseStamped, FrameStamped))
+        self.convert_reg.get_convert((TransformStamped, FrameStamped))
+
+        self.convert_reg.get_convert((FrameStamped, PointStamped))
         self.convert_reg.get_convert((FrameStamped, PoseStamped))
+        self.convert_reg.get_convert((FrameStamped, TransformStamped))
         self.convert_reg.get_convert((FrameStamped, FrameStamped))
 
     def test_frame_stamped_transform(self) -> None:
@@ -85,18 +92,51 @@ class TestRegistration(unittest.TestCase):
 
 
 class TestConvert(unittest.TestCase):
+    point_stamped: ClassVar[PointStamped]
+    pose_stamped: ClassVar[PoseStamped]
+    frame_stamped: ClassVar[FrameStamped]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        point = PointStamped()
+        point.header.frame_id = "map"
+        point.header.stamp = Time(sec=4)
+        point.point.x = 1.0
+        point.point.y = 2.0
+        point.point.z = 3.0
+        cls.point_stamped = point
+
+        pose = PoseStamped()
+        pose.header.frame_id = "map"
+        pose.header.stamp = Time(sec=4)
+        pose.pose.position.x = 1.0
+        pose.pose.position.y = 2.0
+        pose.pose.position.z = 3.0
+        pose.pose.orientation.x = 0.0
+        pose.pose.orientation.y = 0.0
+        pose.pose.orientation.z = 0.0
+        pose.pose.orientation.w = 1.0
+        cls.pose_stamped = pose
+
+        cls.frame_stamped = FrameStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, Time(sec=4), "map")
+
     def test_point_stamped_vector_stamped(self) -> None:
-        p = PointStamped()
-        p.header.frame_id = "map"
-        p.header.stamp = Time(sec=4)
-        p.point.x = 1.0
-        p.point.y = 2.0
-        p.point.z = 3.0
+        p = self.point_stamped
         v = tf2_ros.convert(p, VectorStamped)
         self.assertIsInstance(v, VectorStamped)
         self.assertEqual(v.vector.x(), p.point.x)
         self.assertEqual(v.vector.y(), p.point.y)
         self.assertEqual(v.vector.z(), p.point.z)
+        self.assertEqual(v.header.stamp, p.header.stamp)
+        self.assertEqual(v.header.frame_id, p.header.frame_id)
+
+    def test_pose_stamped_vector_stamped(self) -> None:
+        p = self.pose_stamped
+        v = tf2_ros.convert(p, VectorStamped)
+        self.assertIsInstance(v, VectorStamped)
+        self.assertEqual(v.vector.x(), p.pose.position.x)
+        self.assertEqual(v.vector.y(), p.pose.position.y)
+        self.assertEqual(v.vector.z(), p.pose.position.z)
         self.assertEqual(v.header.stamp, p.header.stamp)
         self.assertEqual(v.header.frame_id, p.header.frame_id)
 
@@ -110,28 +150,62 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(p.header.stamp, v.header.stamp)
         self.assertEqual(p.header.frame_id, v.header.frame_id)
 
-    def test_pose_stamp_frame_stamped(self) -> None:
-        p = PoseStamped()
-        p.header.frame_id = "map"
-        p.header.stamp = Time(sec=4)
-        p.pose.position.x = 1.0
-        p.pose.position.y = 2.0
-        p.pose.position.z = 3.0
-        p.pose.orientation.x = 0.0
-        p.pose.orientation.y = 0.0
-        p.pose.orientation.z = 0.0
-        p.pose.orientation.w = 1.0
+    def test_point_stamped_frane_stamped(self) -> None:
+        p = self.point_stamped
+        f = tf2_ros.convert(p, FrameStamped)
+        self.assertIsInstance(f, FrameStamped)
+        self.assertEqual(f.frame.p.x(), p.point.x)
+        self.assertEqual(f.frame.p.y(), p.point.y)
+        self.assertEqual(f.frame.p.z(), p.point.z)
+        self.assertEqual(f.frame.M.GetQuaternion(), kdl.Rotation.Identity().GetQuaternion())
+        self.assertEqual(f.header.stamp, p.header.stamp)
+        self.assertEqual(f.header.frame_id, p.header.frame_id)
+
+    def test_pose_stamped_frame_stamped(self) -> None:
+        p = self.pose_stamped
         f = tf2_ros.convert(p, FrameStamped)
         self.assertIsInstance(f, FrameStamped)
         self.assertEqual(f.frame.p.x(), p.pose.position.x)
         self.assertEqual(f.frame.p.y(), p.pose.position.y)
         self.assertEqual(f.frame.p.z(), p.pose.position.z)
-        self.assertEqual(f.frame.M.GetQuaternion(), (0.0, 0.0, 0.0, 1.0))
+        q = p.pose.orientation.x, p.pose.orientation.y, p.pose.orientation.z, p.pose.orientation.w
+        self.assertEqual(f.frame.M.GetQuaternion(), q)
         self.assertEqual(f.header.stamp, p.header.stamp)
         self.assertEqual(f.header.frame_id, p.header.frame_id)
 
+    def test_transform_stamped_frame_stamped(self) -> None:
+        t = TransformStamped()
+        t.transform.translation.x = self.pose_stamped.pose.position.x
+        t.transform.translation.y = self.pose_stamped.pose.position.y
+        t.transform.translation.z = self.pose_stamped.pose.position.z
+        t.transform.rotation.x = self.pose_stamped.pose.orientation.x
+        t.transform.rotation.y = self.pose_stamped.pose.orientation.y
+        t.transform.rotation.z = self.pose_stamped.pose.orientation.z
+        t.transform.rotation.w = self.pose_stamped.pose.orientation.w
+        t.header = self.pose_stamped.header
+        t.child_frame_id = "child"  # Not used
+        f = tf2_ros.convert(t, FrameStamped)
+        self.assertIsInstance(f, FrameStamped)
+        self.assertEqual(f.frame.p.x(), t.transform.translation.x)
+        self.assertEqual(f.frame.p.y(), t.transform.translation.y)
+        self.assertEqual(f.frame.p.z(), t.transform.translation.z)
+        q = t.transform.rotation.x, t.transform.rotation.y, t.transform.rotation.z, t.transform.rotation.w
+        self.assertEqual(f.frame.M.GetQuaternion(), q)
+        self.assertEqual(f.header.stamp, t.header.stamp)
+        self.assertEqual(f.header.frame_id, t.header.frame_id)
+
+    def test_frame_stamped_point_stamped(self) -> None:
+        f = self.frame_stamped
+        p = tf2_ros.convert(f, PointStamped)
+        self.assertIsInstance(p, PointStamped)
+        self.assertEqual(p.point.x, f.frame.p.x())
+        self.assertEqual(p.point.y, f.frame.p.y())
+        self.assertEqual(p.point.z, f.frame.p.z())
+        self.assertEqual(p.header.stamp, f.header.stamp)
+        self.assertEqual(p.header.frame_id, f.header.frame_id)
+
     def test_frame_stamped_pose_stamped(self) -> None:
-        f = FrameStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, Time(sec=4), "map")
+        f = self.frame_stamped
         p = tf2_ros.convert(f, PoseStamped)
         self.assertIsInstance(p, PoseStamped)
         self.assertEqual(p.pose.position.x, f.frame.p.x())
@@ -144,6 +218,22 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(p.pose.orientation.w, q[3])
         self.assertEqual(p.header.stamp, f.header.stamp)
         self.assertEqual(p.header.frame_id, f.header.frame_id)
+
+    def test_frame_stamped_transform_stamped(self) -> None:
+        f = self.frame_stamped
+        t = tf2_ros.convert(f, TransformStamped)
+        self.assertIsInstance(t, TransformStamped)
+        self.assertEqual(t.transform.translation.x, f.frame.p.x())
+        self.assertEqual(t.transform.translation.y, f.frame.p.y())
+        self.assertEqual(t.transform.translation.z, f.frame.p.z())
+        q = f.frame.M.GetQuaternion()
+        self.assertEqual(t.transform.rotation.x, q[0])
+        self.assertEqual(t.transform.rotation.y, q[1])
+        self.assertEqual(t.transform.rotation.z, q[2])
+        self.assertEqual(t.transform.rotation.w, q[3])
+        self.assertEqual(t.header.stamp, f.header.stamp)
+        self.assertEqual(t.header.frame_id, f.header.frame_id)
+        self.assertEqual(t.child_frame_id, "")  # Not set
 
     def test_twist_stamped_msg_twist_stamped(self) -> None:
         msg = TwistStampedMsg()

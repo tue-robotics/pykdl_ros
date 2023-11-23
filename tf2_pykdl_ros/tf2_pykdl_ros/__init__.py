@@ -46,24 +46,27 @@ tf2_ros.ConvertRegistration().add_convert((VectorStamped, PointStamped), to_msg_
 tf2_ros.ConvertRegistration().add_to_msg(VectorStamped, to_msg_vector)
 
 
-def from_msg_vector(msg: Union[PointStamped, PoseStamped]) -> VectorStamped:
+def from_msg_vector(msg: Union[PointStamped, PoseStamped, TransformStamped]) -> VectorStamped:
     """
-    Convert a PointStamped/PoseStamped message to a stamped VectorStamped.
+    Convert a PointStamped/PoseStamped/TransformStamped message to a stamped VectorStamped.
 
-    :param msg: The PointStamped/PoseStamped message to convert.
+    :param msg: The PointStamped/PoseStamped/TransformStamped message to convert.
     :return: The timestamped converted PyKDL vector.
     """
     if isinstance(msg, PointStamped):
         v = msg.point
     elif isinstance(msg, PoseStamped):
         v = msg.pose.position
+    elif isinstance(msg, TransformStamped):
+        v = msg.transform.translation
     else:
-        raise TypeError(f"msg should be PointStamped or PoseStamped, not '{type(msg)}'")
+        raise TypeError(f"msg should be PointStamped, PoseStamped or TransformStamped, not '{type(msg)}'")
     return VectorStamped.from_xyz(v.x, v.y, v.z, msg.header.stamp, msg.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((PointStamped, VectorStamped), from_msg_vector)
 tf2_ros.ConvertRegistration().add_convert((PoseStamped, VectorStamped), from_msg_vector)
+tf2_ros.ConvertRegistration().add_convert((TransformStamped, VectorStamped), from_msg_vector)
 tf2_ros.ConvertRegistration().add_from_msg(VectorStamped, from_msg_vector)
 
 
@@ -96,7 +99,26 @@ def do_transform_vector(vector: VectorStamped, transform: TransformStamped) -> V
 tf2_ros.TransformRegistration().add(VectorStamped, do_transform_vector)
 
 
-def to_msg_frame(frame: FrameStamped) -> PoseStamped:
+def to_point_msg_frame(frame: FrameStamped) -> PointStamped:
+    """
+    Convert a FrameStamped to a geometry_msgs PointStamped message.
+
+    :param frame: The frame to convert.
+    :return: The converted point.
+    """
+    msg = PointStamped()
+    msg.header = frame.header
+    v = frame.frame.p
+    msg.point.x = v[0]
+    msg.point.y = v[1]
+    msg.point.z = v[2]
+    return msg
+
+
+tf2_ros.ConvertRegistration().add_convert((FrameStamped, PointStamped), to_point_msg_frame)
+
+
+def to_pose_msg_frame(frame: FrameStamped) -> PoseStamped:
     """
     Convert a FrameStamped to a geometry_msgs PoseStamped message.
 
@@ -117,28 +139,84 @@ def to_msg_frame(frame: FrameStamped) -> PoseStamped:
     return msg
 
 
-tf2_ros.ConvertRegistration().add_convert((FrameStamped, PoseStamped), to_msg_frame)
-tf2_ros.ConvertRegistration().add_to_msg(FrameStamped, to_msg_frame)
+tf2_ros.ConvertRegistration().add_convert((FrameStamped, PoseStamped), to_pose_msg_frame)
+tf2_ros.ConvertRegistration().add_to_msg(FrameStamped, to_pose_msg_frame)
 
 
-def from_msg_frame(msg: PoseStamped) -> FrameStamped:
+def to_transform_msg_frame(frame: FrameStamped) -> TransformStamped:
     """
-    Convert a PoseStamped message to a stamped FrameStamped.
+    Convert a FrameStamped to a geometry_msgs TransformStamped message.
 
-    :param msg: The PoseStamped message to convert.
+    The child_frame_id is not set.
+
+    :param frame: The frame to convert.
+    :return: The converted Pose.
+    """
+    msg = TransformStamped()
+    msg.header = frame.header
+    v = frame.frame.p
+    msg.transform.translation.x = v[0]
+    msg.transform.translation.y = v[1]
+    msg.transform.translation.z = v[2]
+    q = frame.frame.M.GetQuaternion()
+    msg.transform.rotation.x = q[0]
+    msg.transform.rotation.y = q[1]
+    msg.transform.rotation.z = q[2]
+    msg.transform.rotation.w = q[3]
+    return msg
+
+
+tf2_ros.ConvertRegistration().add_convert((FrameStamped, TransformStamped), to_transform_msg_frame)
+
+
+def from_point_msg_frame(msg: PointStamped) -> FrameStamped:
+    """
+    Convert a PointStamped message to a stamped FrameStamped.
+
+    :param msg: The PointStamped message to convert.
     :return: The timestamped converted PyKDL frame.
     """
-    if not isinstance(msg, PoseStamped):
-        raise TypeError(f"msg should be PoseStamped, not '{type(msg)}'")
-    v = msg.pose.position
+    if not isinstance(msg, PointStamped):
+        raise TypeError(f"msg should be a PointStamped, not '{type(msg)}'")
+    vector = kdl.Vector(msg.point.x, msg.point.y, msg.point.z)
+    frame = kdl.Frame(vector)
+    return FrameStamped(frame, msg.header.stamp, msg.header.frame_id)
+
+
+tf2_ros.ConvertRegistration().add_convert((PointStamped, FrameStamped), from_point_msg_frame)
+
+
+def from_msg_frame(msg: Union[PoseStamped, TransformStamped]) -> FrameStamped:
+    """
+    Convert a PoseStamped or TransformStamped message to a stamped FrameStamped.
+
+    :param msg: The message to convert.
+    :return: The timestamped converted PyKDL frame.
+    """
+    if not isinstance(msg, PoseStamped) and not isinstance(msg, TransformStamped):
+        raise TypeError(f"msg should be a PoseStamped or TransformStamped, not '{type(msg)}'")
+
+    if isinstance(msg, PoseStamped):
+        pose_attr = "pose"
+        position_attr = "position"
+        orientation_attr = "orientation"
+    elif isinstance(msg, TransformStamped):
+        pose_attr = "transform"
+        position_attr = "translation"
+        orientation_attr = "rotation"
+
+    pose = getattr(msg, pose_attr)
+    v = getattr(pose, position_attr)
     vector = kdl.Vector(v.x, v.y, v.z)
-    q = msg.pose.orientation
+    q = getattr(pose, orientation_attr)
     rotation = kdl.Rotation.Quaternion(q.x, q.y, q.z, q.w)
+
     frame = kdl.Frame(rotation, vector)
     return FrameStamped(frame, msg.header.stamp, msg.header.frame_id)
 
 
 tf2_ros.ConvertRegistration().add_convert((PoseStamped, FrameStamped), from_msg_frame)
+tf2_ros.ConvertRegistration().add_convert((TransformStamped, FrameStamped), from_msg_frame)
 tf2_ros.ConvertRegistration().add_from_msg(FrameStamped, from_msg_frame)
 
 
