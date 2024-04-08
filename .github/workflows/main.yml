@@ -20,8 +20,8 @@ jobs:
         uses: tue-robotics/tue-env/ci/modified-packages@master
         with:
           commit-range: ${{ steps.commit-range.outputs.commit-range }}
-  tue-ci:
-    name: TUe CI - ${{ matrix.package }}
+  tue-ci-humble:
+    name: TUe CI Humble - ${{ matrix.package }}
     runs-on: ubuntu-latest
     needs: matrix
     strategy:
@@ -33,4 +33,32 @@ jobs:
         uses: tue-robotics/tue-env/ci/main@master
         with:
           image: ghcr.io/tue-robotics/tue-env-ros-humble
+          package: ${{ matrix.package }}
+  tue-ci-rolling-u22:
+    name: TUe CI Rolling U24 - ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    needs: matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.matrix.outputs.packages) }}
+    steps:
+      - name: TUe CI
+        uses: tue-robotics/tue-env/ci/main@master
+        with:
+          image: ghcr.io/tue-robotics/tue-env-ros-rolling-u22
+          package: ${{ matrix.package }}
+  tue-ci-rolling-u24:
+    name: TUe CI Rolling U24 - ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    needs: matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.matrix.outputs.packages) }}
+    steps:
+      - name: TUe CI
+        uses: tue-robotics/tue-env/ci/main@master
+        with:
+          image: ghcr.io/tue-robotics/tue-env-ros-rolling-u24
           package: ${{ matrix.package }}
