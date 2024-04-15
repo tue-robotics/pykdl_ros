@@ -22,6 +22,8 @@
   <test_depend>ament_pep257</test_depend>
   <test_depend>ament_xmllint</test_depend>
   <test_depend>python3-flake8-isort</test_depend>
+  <test_depend>python3-flake8-pyproject-pip</test_depend>
+  <test_depend>python3-flake8-quotes</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>
