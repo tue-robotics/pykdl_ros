@@ -100,7 +100,7 @@ class TestConvert(unittest.TestCase):
     def setUpClass(cls) -> None:
         point = PointStamped()
         point.header.frame_id = "map"
-        point.header.stamp = rospy.Time(sec=4)
+        point.header.stamp = rospy.Time(secs=4)
         point.point.x = 1.0
         point.point.y = 2.0
         point.point.z = 3.0
@@ -108,7 +108,7 @@ class TestConvert(unittest.TestCase):
 
         pose = PoseStamped()
         pose.header.frame_id = "map"
-        pose.header.stamp = rospy.Time(sec=4)
+        pose.header.stamp = rospy.Time(secs=4)
         pose.pose.position.x = 1.0
         pose.pose.position.y = 2.0
         pose.pose.position.z = 3.0
@@ -118,7 +118,7 @@ class TestConvert(unittest.TestCase):
         pose.pose.orientation.w = 1.0
         cls.pose_stamped = pose
 
-        cls.frame_stamped = FrameStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, rospy.Time(sec=4), "map")
+        cls.frame_stamped = FrameStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, rospy.Time(secs=4), "map")
 
     def test_point_stamped_vector_stamped(self) -> None:
         p = self.point_stamped
@@ -141,7 +141,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(v.header.frame_id, p.header.frame_id)
 
     def test_vector_stamped_point_stamped(self) -> None:
-        v = VectorStamped.from_xyz(1, 2, 3, Time(sec=4), "map")
+        v = VectorStamped.from_xyz(1, 2, 3, rospy.Time(secs=4), "map")
         p = tf2_ros.convert(v, PointStamped)
         self.assertIsInstance(p, PointStamped)
         self.assertEqual(p.point.x, v.vector.x())
@@ -238,7 +238,7 @@ class TestConvert(unittest.TestCase):
     def test_twist_stamped_msg_twist_stamped(self) -> None:
         msg = TwistStampedMsg()
         msg.header.frame_id = "map"
-        msg.header.stamp = rospy.Time(4)
+        msg.header.stamp = rospy.Time(secs=4)
         msg.twist.linear.x = 1.0
         msg.twist.linear.y = 2.0
         msg.twist.linear.z = 3.0
@@ -257,7 +257,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(t.header.frame_id, msg.header.frame_id)
 
     def test_twist_stamped_twist_stamped_msg(self):
-        t = TwistStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, rospy.Time(4), "map")
+        t = TwistStamped.from_xyz_rpy(1, 2, 3, 4, 5, 6, rospy.Time(secs=4), "map")
         msg = tf2_ros.convert(t, TwistStampedMsg)
         self.assertIsInstance(msg, TwistStampedMsg)
         self.assertEqual(msg.twist.linear.x, t.twist.vel.x())
@@ -272,7 +272,7 @@ class TestConvert(unittest.TestCase):
     def test_wrench_stamped_msg_wrench_stamped(self):
         msg = WrenchStampedMsg()
         msg.header.frame_id = "map"
-        msg.header.stamp = rospy.Time(4)
+        msg.header.stamp = rospy.Time(secs=4)
         msg.wrench.force.x = 1.0
         msg.wrench.force.y = 2.0
         msg.wrench.force.z = 3.0
@@ -291,7 +291,7 @@ class TestConvert(unittest.TestCase):
         self.assertEqual(w.header.frame_id, msg.header.frame_id)
 
     def test_wrench_stamped_wrench_stamped_msg(self):
-        w = WrenchStamped.from_fxfyfz_txtytz(1, 2, 3, 4, 5, 6, rospy.Time(4), "map")
+        w = WrenchStamped.from_fxfyfz_txtytz(1, 2, 3, 4, 5, 6, rospy.Time(secs=4), "map")
         msg = tf2_ros.convert(w, WrenchStampedMsg)
         self.assertIsInstance(msg, WrenchStampedMsg)
         self.assertEqual(msg.wrench.force.x, w.wrench.force.x())
@@ -314,12 +314,12 @@ class TestTransform(unittest.TestCase):
         cls.t = TransformStamped()
         cls.t.transform.translation.x = -1
         cls.t.transform.rotation.x = -1
-        cls.t.header.stamp = rospy.Time(2)
+        cls.t.header.stamp = rospy.Time(secs=2)
         cls.t.header.frame_id = "a"
         cls.t.child_frame_id = "b"
 
     def test_transform(self):
-        f = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(2), "b")
+        f = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(secs=2), "b")
         transform_func = self.registration.get(type(f))
         f_b = transform_func(f, self.t)
         self.assertEqual(f_b.frame.p.x(), 0)
@@ -331,7 +331,7 @@ class TestTransform(unittest.TestCase):
         )
 
     def test_transform_incorrect_frame(self):
-        f2 = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(2), "a")
+        f2 = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), rospy.Time(secs=2), "a")
         transform_func = self.registration.get(type(f2))
         with self.assertRaises(AssertionError):
             transform_func(f2, self.t)
