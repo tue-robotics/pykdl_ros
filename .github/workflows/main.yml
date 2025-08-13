@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: [humble, jazzy]
+        ros_distro: [humble, jazzy, rolling-u24]
         package: ${{ fromJson(needs.matrix.outputs.packages) }}
     steps:
       - name: TUe CI
