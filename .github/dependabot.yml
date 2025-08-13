@@ -9,3 +9,15 @@ updates:
     schedule:
       interval: "weekly"
       day: "tuesday"
+  # ROS2
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: ros2
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    target-branch: ros2
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
