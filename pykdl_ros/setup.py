@@ -1,10 +1,10 @@
-from os import path
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
 package_name = "pykdl_ros"
 
-package_share = path.join("share", package_name)
+package_share = Path("share", package_name)
 
 setup(
     name=package_name,
@@ -12,10 +12,10 @@ setup(
     packages=find_packages(exclude=["test"]),
     data_files=[
         (
-            path.join("share", "ament_index", "resource_index", "packages"),
-            [path.join("resource", package_name)],
+            Path("share", "ament_index", "resource_index", "packages").as_posix(),
+            [Path("resource", package_name).as_posix()],
         ),
-        (package_share, ["package.xml"]),
+        (package_share.as_posix(), ["package.xml"]),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
