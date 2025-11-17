@@ -40,7 +40,7 @@ class FrameStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, FrameStamped):
-            return self.frame == other.frame and self.header.frame_id == other.header.frame_id
+            return self.frame == other.frame and self.header.frame_id == other.header.frame_id  # type: ignore[no-any-return]
         return False
 
     def __ne__(self, other: object) -> bool:
@@ -116,7 +116,7 @@ class TwistStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, TwistStamped):
-            return self.twist == other.twist and self.header.frame_id == other.header.frame_id
+            return self.twist == other.twist and self.header.frame_id == other.header.frame_id  # type: ignore[no-any-return]
         return False
 
     def __ne__(self, other: object) -> bool:
@@ -191,7 +191,7 @@ class VectorStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, VectorStamped):
-            return self.vector == other.vector and self.header.frame_id == other.header.frame_id
+            return self.vector == other.vector and self.header.frame_id == other.header.frame_id  # type: ignore[no-any-return]
         return False
 
     def __ne__(self, other: object) -> bool:
@@ -269,7 +269,7 @@ class WrenchStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, WrenchStamped):
-            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id
+            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id  # type: ignore[no-any-return]
         return False
 
     def __ne__(self, other: object) -> bool:
