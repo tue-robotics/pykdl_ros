@@ -25,7 +25,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-
+from pathlib import Path
 
 import pytest
 from ament_ruff.main import main as ament_ruff_main
@@ -34,5 +34,5 @@ from ament_ruff.main import main as ament_ruff_main
 @pytest.mark.ruff
 @pytest.mark.linter
 def test_ruff() -> None:  # noqa: D103
-    rc = ament_ruff_main(argv=[])
+    rc = ament_ruff_main(argv=["--config", (Path(__file__).parent.parent / "pyproject.toml").as_posix()])
     assert rc == 0, "Found code style errors / warnings"
