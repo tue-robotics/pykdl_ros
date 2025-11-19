@@ -18,7 +18,7 @@ from ament_mypy.main import main
 
 @pytest.mark.mypy
 @pytest.mark.linter
-def test_mypy() -> None:
+def test_mypy() -> None:  # noqa: D103
     try:
         import importlib.resources as _  # noqa: F401
     except ModuleNotFoundError:

@@ -1,20 +1,21 @@
-from typing import Union
+from __future__ import annotations
 
-import PyKDL as kdl
+import PyKDL as kdl  # noqa: N813
 import tf2_ros
 from geometry_msgs.msg import (
+    Point,
     PointStamped,
     PoseStamped,
     TransformStamped,
     TwistStamped as TwistStampedMsg,
+    Vector3,
     WrenchStamped as WrenchStampedMsg,
 )
 from pykdl_ros import FrameStamped, TwistStamped, VectorStamped, WrenchStamped
 
 
 def transform_to_kdl(t: TransformStamped) -> kdl.Frame:
-    """
-    Convert a geometry_msgs Transform message to a PyKDL Frame.
+    """Convert a geometry_msgs Transform message to a PyKDL Frame.
 
     :param t: The Transform message to convert.
     :return: The converted PyKDL frame.
@@ -28,8 +29,7 @@ def transform_to_kdl(t: TransformStamped) -> kdl.Frame:
 
 
 def to_msg_vector(vector: VectorStamped) -> PointStamped:
-    """
-    Convert a VectorStamped to a geometry_msgs PointStamped message.
+    """Convert a VectorStamped to a geometry_msgs PointStamped message.
 
     :param vector: The vector to convert.
     :return: The converted vector/point.
@@ -46,13 +46,13 @@ tf2_ros.ConvertRegistration().add_convert((VectorStamped, PointStamped), to_msg_
 tf2_ros.ConvertRegistration().add_to_msg(VectorStamped, to_msg_vector)
 
 
-def from_msg_vector(msg: Union[PointStamped, PoseStamped, TransformStamped]) -> VectorStamped:
-    """
-    Convert a PointStamped/PoseStamped/TransformStamped message to a stamped VectorStamped.
+def from_msg_vector(msg: PointStamped | PoseStamped | TransformStamped) -> VectorStamped:
+    """Convert a PointStamped/PoseStamped/TransformStamped message to a stamped VectorStamped.
 
     :param msg: The PointStamped/PoseStamped/TransformStamped message to convert.
     :return: The timestamped converted PyKDL vector.
     """
+    v: Point | Vector3
     if isinstance(msg, PointStamped):
         v = msg.point
     elif isinstance(msg, PoseStamped):
@@ -60,7 +60,8 @@ def from_msg_vector(msg: Union[PointStamped, PoseStamped, TransformStamped]) -> 
     elif isinstance(msg, TransformStamped):
         v = msg.transform.translation
     else:
-        raise TypeError(f"msg should be PointStamped, PoseStamped or TransformStamped, not '{type(msg)}'")
+        error_msg = f"msg should be PointStamped, PoseStamped or TransformStamped, not '{type(msg)}'"
+        raise TypeError(error_msg)
     return VectorStamped.from_xyz(v.x, v.y, v.z, msg.header.stamp, msg.header.frame_id)
 
 
@@ -71,8 +72,7 @@ tf2_ros.ConvertRegistration().add_from_msg(VectorStamped, from_msg_vector)
 
 
 def convert_vector(vector: VectorStamped) -> VectorStamped:
-    """
-    Convert a stamped PyKDL Vector to a stamped PyKDL Vector.
+    """Convert a stamped PyKDL Vector to a stamped PyKDL Vector.
 
     :param vector: The vector to convert.
     :return: The timestamped converted PyKDL vector.
@@ -84,14 +84,19 @@ tf2_ros.ConvertRegistration().add_convert((VectorStamped, VectorStamped), conver
 
 
 def do_transform_vector(vector: VectorStamped, transform: TransformStamped) -> VectorStamped:
-    """
-    Apply a transform in the form of a geometry_msgs message to a VectorStamped.
+    """Apply a transform in the form of a geometry_msgs message to a VectorStamped.
 
     :param vector: The VectorStamped to transform.
     :param transform: The transform to apply.
     :return: The transformed vector.
     """
-    assert transform.child_frame_id == vector.header.frame_id
+    if transform.child_frame_id != vector.header.frame_id:
+        error_msg = (
+            f"Cannot transform a VectorStamped from frame '{vector.header.frame_id}' using a transform with "
+            f"child_frame_id '{transform.child_frame_id}'"
+        )
+        raise tf2_ros.TransformException(error_msg)
+
     res_vector = transform_to_kdl(transform) * vector.vector
     return VectorStamped(res_vector, transform.header.stamp, transform.header.frame_id)
 
@@ -100,8 +105,7 @@ tf2_ros.TransformRegistration().add(VectorStamped, do_transform_vector)
 
 
 def to_point_msg_frame(frame: FrameStamped) -> PointStamped:
-    """
-    Convert a FrameStamped to a geometry_msgs PointStamped message.
+    """Convert a FrameStamped to a geometry_msgs PointStamped message.
 
     :param frame: The frame to convert.
     :return: The converted point.
@@ -119,8 +123,7 @@ tf2_ros.ConvertRegistration().add_convert((FrameStamped, PointStamped), to_point
 
 
 def to_pose_msg_frame(frame: FrameStamped) -> PoseStamped:
-    """
-    Convert a FrameStamped to a geometry_msgs PoseStamped message.
+    """Convert a FrameStamped to a geometry_msgs PoseStamped message.
 
     :param frame: The frame to convert.
     :return: The converted Pose.
@@ -144,8 +147,7 @@ tf2_ros.ConvertRegistration().add_to_msg(FrameStamped, to_pose_msg_frame)
 
 
 def to_transform_msg_frame(frame: FrameStamped) -> TransformStamped:
-    """
-    Convert a FrameStamped to a geometry_msgs TransformStamped message.
+    """Convert a FrameStamped to a geometry_msgs TransformStamped message.
 
     The child_frame_id is not set.
 
@@ -170,14 +172,15 @@ tf2_ros.ConvertRegistration().add_convert((FrameStamped, TransformStamped), to_t
 
 
 def from_point_msg_frame(msg: PointStamped) -> FrameStamped:
-    """
-    Convert a PointStamped message to a stamped FrameStamped.
+    """Convert a PointStamped message to a stamped FrameStamped.
 
     :param msg: The PointStamped message to convert.
     :return: The timestamped converted PyKDL frame.
     """
     if not isinstance(msg, PointStamped):
-        raise TypeError(f"msg should be a PointStamped, not '{type(msg)}'")
+        error_msg = f"msg should be a PointStamped, not '{type(msg)}'"
+        raise TypeError(error_msg)
+
     vector = kdl.Vector(msg.point.x, msg.point.y, msg.point.z)
     frame = kdl.Frame(vector)
     return FrameStamped(frame, msg.header.stamp, msg.header.frame_id)
@@ -186,15 +189,15 @@ def from_point_msg_frame(msg: PointStamped) -> FrameStamped:
 tf2_ros.ConvertRegistration().add_convert((PointStamped, FrameStamped), from_point_msg_frame)
 
 
-def from_msg_frame(msg: Union[PoseStamped, TransformStamped]) -> FrameStamped:
-    """
-    Convert a PoseStamped or TransformStamped message to a stamped FrameStamped.
+def from_msg_frame(msg: PoseStamped | TransformStamped) -> FrameStamped:
+    """Convert a PoseStamped or TransformStamped message to a stamped FrameStamped.
 
     :param msg: The message to convert.
     :return: The timestamped converted PyKDL frame.
     """
     if not isinstance(msg, PoseStamped) and not isinstance(msg, TransformStamped):
-        raise TypeError(f"msg should be a PoseStamped or TransformStamped, not '{type(msg)}'")
+        error_msg = f"msg should be a PoseStamped or TransformStamped, not '{type(msg)}'"
+        raise TypeError(error_msg)
 
     if isinstance(msg, PoseStamped):
         pose_attr = "pose"
@@ -221,8 +224,7 @@ tf2_ros.ConvertRegistration().add_from_msg(FrameStamped, from_msg_frame)
 
 
 def convert_frame(frame: FrameStamped) -> FrameStamped:
-    """
-    Convert a stamped PyKDL Frame to a stamped PyKDL Frame.
+    """Convert a stamped PyKDL Frame to a stamped PyKDL Frame.
 
     :param frame: The frame to convert.
     :return: The timestamped converted PyKDL frame.
@@ -234,14 +236,19 @@ tf2_ros.ConvertRegistration().add_convert((FrameStamped, FrameStamped), convert_
 
 
 def do_transform_frame(frame: FrameStamped, transform: TransformStamped) -> FrameStamped:
-    """
-    Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
+    """Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
 
     :param frame: The PyKDL frame to transform.
     :param transform: The transform to apply.
     :return: The transformed PyKDL frame.
     """
-    assert transform.child_frame_id == frame.header.frame_id
+    if transform.child_frame_id != frame.header.frame_id:
+        error_msg = (
+            f"Cannot transform a FrameStamped from frame '{frame.header.frame_id}' using a transform with "
+            f"child_frame_id '{transform.child_frame_id}'"
+        )
+        raise tf2_ros.TransformException(error_msg)
+
     res_frame = transform_to_kdl(transform) * frame.frame
     return FrameStamped(res_frame, transform.header.stamp, transform.header.frame_id)
 
@@ -250,8 +257,7 @@ tf2_ros.TransformRegistration().add(FrameStamped, do_transform_frame)
 
 
 def to_msg_twist(twist: TwistStamped) -> TwistStampedMsg:
-    """
-    Convert a FrameStamped to a geometry_msgs TwistStamped message.
+    """Convert a FrameStamped to a geometry_msgs TwistStamped message.
 
     :param twist: The frame to convert.
     :return: The converted Twist.
@@ -274,14 +280,15 @@ tf2_ros.ConvertRegistration().add_to_msg(TwistStamped, to_msg_twist)
 
 
 def from_msg_twist(msg: TwistStampedMsg) -> TwistStamped:
-    """
-    Convert a TwistStamped message to a stamped TwistStamped.
+    """Convert a TwistStamped message to a stamped TwistStamped.
 
     :param msg: The TwistStamped message to convert.
     :return: The timestamped converted PyKDL vector.
     """
     if not isinstance(msg, TwistStampedMsg):
-        raise TypeError(f"msg should be TwistStamped, not '{type(msg)}'")
+        error_msg = f"msg should be TwistStamped, not '{type(msg)}'"
+        raise TypeError(error_msg)
+
     lin = msg.twist.linear
     vel = kdl.Vector(lin.x, lin.y, lin.z)
     ang = msg.twist.angular
@@ -295,8 +302,7 @@ tf2_ros.ConvertRegistration().add_from_msg(TwistStamped, from_msg_twist)
 
 
 def convert_twist(twist: TwistStamped) -> TwistStamped:
-    """
-    Convert a stamped PyKDL Twist to a stamped PyKDL Twist.
+    """Convert a stamped PyKDL Twist to a stamped PyKDL Twist.
 
     :param twist: The twist to convert.
     :return: The timestamped converted PyKDL twist.
@@ -308,14 +314,19 @@ tf2_ros.ConvertRegistration().add_convert((TwistStamped, TwistStamped), convert_
 
 
 def do_transform_twist(twist: TwistStamped, transform: TransformStamped) -> TwistStamped:
-    """
-    Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
+    """Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
 
     :param twist: The PyKDL twist to transform.
     :param transform: The transform to apply.
     :return: The transformed PyKDL twist.
     """
-    assert transform.child_frame_id == twist.header.frame_id
+    if transform.child_frame_id != twist.header.frame_id:
+        error_msg = (
+            f"Cannot transform a TwistStamped from frame '{twist.header.frame_id}' using a transform with "
+            f"child_frame_id '{transform.child_frame_id}'"
+        )
+        raise tf2_ros.TransformException(error_msg)
+
     res_twist = transform_to_kdl(transform) * twist.twist
     return TwistStamped(res_twist, transform.header.stamp, transform.header.frame_id)
 
@@ -324,8 +335,7 @@ tf2_ros.TransformRegistration().add(TwistStamped, do_transform_twist)
 
 
 def to_msg_wrench(wrench: WrenchStamped) -> WrenchStampedMsg:
-    """
-    Convert a FrameStamped to a geometry_msgs WrenchStamped message.
+    """Convert a FrameStamped to a geometry_msgs WrenchStamped message.
 
     :param wrench: The wrench to convert.
     :return: The converted Wrench.
@@ -348,14 +358,15 @@ tf2_ros.ConvertRegistration().add_to_msg(WrenchStamped, to_msg_wrench)
 
 
 def from_msg_wrench(msg: WrenchStampedMsg) -> WrenchStamped:
-    """
-    Convert a WrenchStamped message to a stamped WrenchStamped.
+    """Convert a WrenchStamped message to a stamped WrenchStamped.
 
     :param msg: The WrenchStamped message to convert.
     :return: The timestamped converted PyKDL wrench.
     """
     if not isinstance(msg, WrenchStampedMsg):
-        raise TypeError(f"msg should be WrenchStamped, not '{type(msg)}'")
+        error_msg = f"msg should be WrenchStamped, not '{type(msg)}'"
+        raise TypeError(error_msg)
+
     f = msg.wrench.force
     t = msg.wrench.torque
     force = kdl.Vector(f.x, f.y, f.z)
@@ -369,8 +380,7 @@ tf2_ros.ConvertRegistration().add_from_msg(WrenchStamped, from_msg_wrench)
 
 
 def convert_wrench(wrench: WrenchStamped) -> WrenchStamped:
-    """
-    Convert a stamped PyKDL Wrench to a stamped PyKDL Wrench.
+    """Convert a stamped PyKDL Wrench to a stamped PyKDL Wrench.
 
     :param wrench: The wrench to convert.
     :return: The timestamped converted PyKDL wrench.
@@ -382,14 +392,19 @@ tf2_ros.ConvertRegistration().add_convert((WrenchStamped, WrenchStamped), conver
 
 
 def do_transform_wrench(wrench: WrenchStamped, transform: TransformStamped) -> WrenchStamped:
-    """
-    Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
+    """Apply a transform in the form of a geometry_msgs message to a PyKDL Frame.
 
     :param wrench: The PyKDL wrench to transform.
     :param transform: The transform to apply.
     :return: The transformed PyKDL wrench.
     """
-    assert transform.child_frame_id == wrench.header.frame_id
+    if transform.child_frame_id != wrench.header.frame_id:
+        error_msg = (
+            f"Cannot transform a WrenchStamped from frame '{wrench.header.frame_id}' using a transform with "
+            f"child_frame_id '{transform.child_frame_id}'"
+        )
+        raise tf2_ros.TransformException(error_msg)
+
     res_wrench = transform_to_kdl(transform) * wrench.wrench
     return WrenchStamped(res_wrench, transform.header.stamp, transform.header.frame_id)
 

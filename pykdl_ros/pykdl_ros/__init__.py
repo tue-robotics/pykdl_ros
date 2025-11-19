@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import PyKDL as kdl
+import PyKDL as kdl  # noqa: N813
 from builtin_interfaces.msg import Time
 from std_msgs.msg import Header
 
@@ -11,16 +11,24 @@ class FrameStamped:
     __slots__ = "frame", "header"
 
     def __init__(self, frame: kdl.Frame, stamp: Time, frame_id: str):
-        """
-        Construct a FrameStamped object.
+        """Construct a FrameStamped object.
 
         :param frame: frame
         :param stamp: TimeStamp
         :param frame_id: Frame ID
         """
-        assert isinstance(frame, kdl.Frame)
-        assert isinstance(stamp, Time)
-        assert isinstance(frame_id, str)
+        if not isinstance(frame, kdl.Frame):
+            msg = f"Expected frame to be of type kdl.Frame but got {type(frame)}"
+            raise TypeError(msg)
+
+        if not isinstance(stamp, Time):
+            msg = f"Expected stamp to be of type Time but got {type(stamp)}"
+            raise TypeError(msg)
+
+        if not isinstance(frame_id, str):
+            msg = f"Expected frame_id to be of type str but got {type(frame_id)}"
+            raise TypeError(msg)
+
         self.frame: kdl.Frame = frame
         self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
@@ -32,9 +40,8 @@ class FrameStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, FrameStamped):
-            return self.frame == other.frame and self.header.frame_id == other.header.frame_id  # type: ignore
-        else:
-            return False
+            return bool(self.frame == other.frame and self.header.frame_id == other.header.frame_id)
+        return False
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -44,8 +51,7 @@ class FrameStamped:
 
     @classmethod
     def identity(cls, stamp: Time, frame_id: str) -> FrameStamped:
-        """
-        Construct a FrameStamped object with identity frame.
+        """Construct a FrameStamped object with identity frame.
 
         :param stamp: TimeStamp
         :param frame_id: Frame ID
@@ -55,11 +61,10 @@ class FrameStamped:
         return cls(frame, stamp, frame_id)
 
     @classmethod
-    def from_xyz_rpy(
+    def from_xyz_rpy(  # noqa: PLR0913
         cls, x: float, y: float, z: float, roll: float, pitch: float, yaw: float, stamp: Time, frame_id: str
     ) -> FrameStamped:
-        """
-        Construct a FrameStamped from XYZ and RPY.
+        """Construct a FrameStamped from XYZ and RPY.
 
         :param x: x
         :param y: y
@@ -80,19 +85,27 @@ class FrameStamped:
 class TwistStamped:
     """Stamped version of PyKDL.Twist."""
 
-    __slots__ = "twist", "header"
+    __slots__ = "header", "twist"
 
     def __init__(self, twist: kdl.Twist, stamp: Time, frame_id: str) -> None:
-        """
-        Construct a TwistStamped object.
+        """Construct a TwistStamped object.
 
         :param twist: twist
         :param stamp: TimeStamp
         :param frame_id: Frame ID
         """
-        assert isinstance(twist, kdl.Twist)
-        assert isinstance(stamp, Time)
-        assert isinstance(frame_id, str)
+        if not isinstance(twist, kdl.Twist):
+            msg = f"Expected twist to be of type kdl.Twist but got {type(twist)}"
+            raise TypeError(msg)
+
+        if not isinstance(stamp, Time):
+            msg = f"Expected stamp to be of type Time but got {type(stamp)}"
+            raise TypeError(msg)
+
+        if not isinstance(frame_id, str):
+            msg = f"Expected frame_id to be of type str but got {type(frame_id)}"
+            raise TypeError(msg)
+
         self.twist: kdl.Twist = twist
         self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
@@ -103,9 +116,8 @@ class TwistStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, TwistStamped):
-            return self.twist == other.twist and self.header.frame_id == other.header.frame_id  # type: ignore
-        else:
-            return False
+            return bool(self.twist == other.twist and self.header.frame_id == other.header.frame_id)
+        return False
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -115,8 +127,7 @@ class TwistStamped:
 
     @classmethod
     def zero(cls, stamp: Time, frame_id: str) -> TwistStamped:
-        """
-        Construct a TwistStamped object with zero velocity and angular velocity.
+        """Construct a TwistStamped object with zero velocity and angular velocity.
 
         :param stamp: TimeStamp
         :param frame_id: Frame ID
@@ -126,11 +137,10 @@ class TwistStamped:
         return cls(twist, stamp, frame_id)
 
     @classmethod
-    def from_xyz_rpy(
+    def from_xyz_rpy(  # noqa: PLR0913
         cls, vx: float, vy: float, vz: float, wx: float, wy: float, wz: float, stamp: Time, frame_id: str
     ) -> TwistStamped:
-        """
-        Construct a TwistStamped from velocity and XYZ and RPY.
+        """Construct a TwistStamped from velocity and XYZ and RPY.
 
         :param vx: vx
         :param vy: vy
@@ -151,19 +161,27 @@ class TwistStamped:
 class VectorStamped:
     """Stamped version of PyKDL.Vector."""
 
-    __slots__ = "vector", "header"
+    __slots__ = "header", "vector"
 
     def __init__(self, vector: kdl.Vector, stamp: Time, frame_id: str) -> None:
-        """
-        Construct a VectorStamped object.
+        """Construct a VectorStamped object.
 
         :param vector: vector
         :param stamp: TimeStamp
         :param frame_id: Frame ID
         """
-        assert isinstance(vector, kdl.Vector)
-        assert isinstance(stamp, Time)
-        assert isinstance(frame_id, str)
+        if not isinstance(vector, kdl.Vector):
+            msg = f"Expected vector to be of type kdl.Vector but got {type(vector)}"
+            raise TypeError(msg)
+
+        if not isinstance(stamp, Time):
+            msg = f"Expected stamp to be of type Time but got {type(stamp)}"
+            raise TypeError(msg)
+
+        if not isinstance(frame_id, str):
+            msg = f"Expected frame_id to be of type str but got {type(frame_id)}"
+            raise TypeError(msg)
+
         self.vector: kdl.Vector = vector
         self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
@@ -173,9 +191,8 @@ class VectorStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, VectorStamped):
-            return self.vector == other.vector and self.header.frame_id == other.header.frame_id  # type: ignore
-        else:
-            return False
+            return bool(self.vector == other.vector and self.header.frame_id == other.header.frame_id)
+        return False
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -185,8 +202,7 @@ class VectorStamped:
 
     @classmethod
     def zero(cls, stamp: Time, frame_id: str) -> VectorStamped:
-        """
-        Construct a VectorStamped object with zero vector.
+        """Construct a VectorStamped object with zero vector.
 
         :param stamp: TimeStamp
         :param frame_id: Frame ID
@@ -197,8 +213,7 @@ class VectorStamped:
 
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float, stamp: Time, frame_id: str) -> VectorStamped:
-        """
-        Construct a VectorStamped from XYZ.
+        """Construct a VectorStamped from XYZ.
 
         :param x: x
         :param y: y
@@ -212,8 +227,7 @@ class VectorStamped:
 
     @classmethod
     def from_framestamped(cls, frame: FrameStamped) -> VectorStamped:
-        """
-        Construct a VectorStamped by extracting the vector from a FrameStamped.
+        """Construct a VectorStamped by extracting the vector from a FrameStamped.
 
         :param frame: frame
         :return: Filled object
@@ -224,19 +238,27 @@ class VectorStamped:
 class WrenchStamped:
     """Stamped version of PyKDL.Wrench."""
 
-    __slots__ = "wrench", "header"
+    __slots__ = "header", "wrench"
 
     def __init__(self, wrench: kdl.Wrench, stamp: Time, frame_id: str) -> None:
-        """
-        Construct a WrenchStamped object.
+        """Construct a WrenchStamped object.
 
         :param wrench: wrench
         :param stamp: TimeStamp
         :param frame_id: Frame ID
         """
-        assert isinstance(wrench, kdl.Wrench)
-        assert isinstance(stamp, Time)
-        assert isinstance(frame_id, str)
+        if not isinstance(wrench, kdl.Wrench):
+            msg = f"Expected wrench to be of type kdl.Wrench but got {type(wrench)}"
+            raise TypeError(msg)
+
+        if not isinstance(stamp, Time):
+            msg = f"Expected stamp to be of type Time but got {type(stamp)}"
+            raise TypeError(msg)
+
+        if not isinstance(frame_id, str):
+            msg = f"Expected frame_id to be of type str but got {type(frame_id)}"
+            raise TypeError(msg)
+
         self.wrench: kdl.Wrench = wrench
         self.header: Header = Header(frame_id=frame_id, stamp=stamp)
 
@@ -247,9 +269,8 @@ class WrenchStamped:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, WrenchStamped):
-            return self.wrench == other.wrench and self.header.frame_id == other.header.frame_id  # type: ignore
-        else:
-            return False
+            return bool(self.wrench == other.wrench and self.header.frame_id == other.header.frame_id)
+        return False
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -259,8 +280,7 @@ class WrenchStamped:
 
     @classmethod
     def zero(cls, stamp: Time, frame_id: str) -> WrenchStamped:
-        """
-        Construct a WrenchStamped object with zero force and torque.
+        """Construct a WrenchStamped object with zero force and torque.
 
         :param stamp: TimeStamp
         :param frame_id: Frame ID
@@ -270,11 +290,10 @@ class WrenchStamped:
         return cls(wrench, stamp, frame_id)
 
     @classmethod
-    def from_fxfyfz_txtytz(
+    def from_fxfyfz_txtytz(  # noqa: PLR0913
         cls, fx: float, fy: float, fz: float, tx: float, ty: float, tz: float, stamp: Time, frame_id: str
     ) -> WrenchStamped:
-        """
-        Construct a WrenchStamped from force and torque in XYZ.
+        """Construct a WrenchStamped from force and torque in XYZ.
 
         :param fx: fx
         :param fy: fy
