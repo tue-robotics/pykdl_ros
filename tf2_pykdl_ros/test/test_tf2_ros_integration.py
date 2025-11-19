@@ -337,7 +337,7 @@ class TestTransform(unittest.TestCase):
     def test_transform_incorrect_frame(self) -> None:
         f2 = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 2, 3), kdl.Vector(1, 2, 3)), Time(sec=2), "a")
         transform_func = self.registration.get(type(f2))
-        with pytest.raises(AssertionError):
+        with pytest.raises(tf2_ros.TransformException):
             transform_func(f2, self.t)
 
 
