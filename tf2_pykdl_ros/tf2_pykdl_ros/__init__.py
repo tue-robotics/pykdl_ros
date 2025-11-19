@@ -3,10 +3,12 @@ from __future__ import annotations
 import PyKDL as kdl  # noqa: N813
 import tf2_ros
 from geometry_msgs.msg import (
+    Point,
     PointStamped,
     PoseStamped,
     TransformStamped,
     TwistStamped as TwistStampedMsg,
+    Vector3,
     WrenchStamped as WrenchStampedMsg,
 )
 from pykdl_ros import FrameStamped, TwistStamped, VectorStamped, WrenchStamped
@@ -50,6 +52,7 @@ def from_msg_vector(msg: PointStamped | PoseStamped | TransformStamped) -> Vecto
     :param msg: The PointStamped/PoseStamped/TransformStamped message to convert.
     :return: The timestamped converted PyKDL vector.
     """
+    v: Point | Vector3
     if isinstance(msg, PointStamped):
         v = msg.point
     elif isinstance(msg, PoseStamped):
