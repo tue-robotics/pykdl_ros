@@ -23,5 +23,5 @@ setup(
     maintainer_email="MatthijsBurgh@outlook.com",
     description="Stamped PyKDL classes",
     license="BSD",
-    tests_require=["pytest"],
+    extras_require={"test": ["pytest"]},
 )

@@ -23,5 +23,5 @@ setup(
     maintainer_email="matthijs.van.der.burgh@vbti.nl",
     description="tf2 conversions for pykdl_ros",
     license="BSD",
-    tests_require=["pytest"],
+    extras_require={"test": ["pytest"]},
 )
